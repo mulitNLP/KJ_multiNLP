@@ -59,24 +59,56 @@ function render() {
 
 // 배경을 그리는 역할, 그라데이션
 function renderBackground(x, y) {
-  const backgroundX = MAP_SIZE / 2 - x + canvas.width / 2;
-  const backgroundY = MAP_SIZE / 2 - y + canvas.height / 2;
+  // const backgroundX = MAP_SIZE / 2 - x + canvas.width / 2;
+  // const backgroundY = MAP_SIZE / 2 - y + canvas.height / 2;
 
-  // const backgroundX = MAP_SIZE;
-  // const backgroundY = MAP_SIZE;
+  // // const backgroundX = MAP_SIZE;
+  // // const backgroundY = MAP_SIZE;
 
-  const backgroundGradient = context.createRadialGradient(
-    backgroundX,
-    backgroundY,
-    MAP_SIZE / 10,
-    backgroundX,
-    backgroundY,
-    MAP_SIZE / 2,
-  );
-  backgroundGradient.addColorStop(0, 'gray');
-  backgroundGradient.addColorStop(1, 'black');
-  context.fillStyle = backgroundGradient;
+  // const backgroundGradient = context.createRadialGradient(
+  //   backgroundX,
+  //   backgroundY,
+  //   MAP_SIZE / 10,
+  //   backgroundX,
+  //   backgroundY,
+  //   MAP_SIZE / 2,
+  // );
+  // backgroundGradient.addColorStop(0, 'gray');
+  // backgroundGradient.addColorStop(1, 'black');
+  // context.fillStyle = backgroundGradient;
+  // context.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Draw black background
+  context.fillStyle = 'black';
   context.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Draw grid
+  const gridSize = 50; // Define the size of the grid here
+  context.strokeStyle = 'white';
+  context.lineWidth = 1;
+
+  // Start positions for grid
+  const startX = x - (x % gridSize);
+  const startY = y - (y % gridSize);
+
+  // Draw vertical lines
+  for (let i = startX; i < MAP_SIZE; i += gridSize) {
+    const canvasX = canvas.width / 2 + i - x;
+    context.beginPath();
+    context.moveTo(canvasX, 0);
+    context.lineTo(canvasX, canvas.height);
+    context.stroke();
+  }
+
+  // Draw horizontal lines
+  for (let i = startY; i < MAP_SIZE; i += gridSize) {
+    const canvasY = canvas.height / 2 + i - y;
+    context.beginPath();
+    context.moveTo(0, canvasY);
+    context.lineTo(canvas.width, canvasY);
+    context.stroke();
+  }
+
 }
 
 // 주어진 좌표에서 배를 그리는 함수
