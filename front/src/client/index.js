@@ -40,3 +40,4 @@ function onGameOver() {
   playMenu.classList.remove('hidden');
   setLeaderboardHidden(true);
 }
+

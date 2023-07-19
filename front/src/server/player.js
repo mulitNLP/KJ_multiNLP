@@ -2,8 +2,6 @@ const ObjectClass = require('./object');
 const Bullet = require('./bullet');
 const Constants = require('../shared/constants');
 
-// const enterInput = document.getElementById('input-bar');
-
 class Player extends ObjectClass {
   constructor(id, username, x, y) {
     super(id, x, y, Math.random() * 2 * Math.PI, Constants.PLAYER_SPEED);
@@ -14,6 +12,7 @@ class Player extends ObjectClass {
     this.keycodes = {};
   }
 
+  
   // Returns a newly created bullet, or null.
   update(dt) {
     // 앞으로 나가는거

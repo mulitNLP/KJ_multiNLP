@@ -1,7 +1,3 @@
-// const enterInput = document.getElementById('input-bar');
-const Constants = require('../shared/constants');
-let keycodes = {};
-
 class Object {
   constructor(id, x, y, dir, speed) {
     this.id = id;
@@ -32,10 +28,6 @@ class Object {
       x: this.x,
       y: this.y,
     };
-  }
-
-  setKeys(key, updown) {
-    keycodes[key] = updown;
   }
 
 }
