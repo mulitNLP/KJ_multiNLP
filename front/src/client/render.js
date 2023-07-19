@@ -87,10 +87,6 @@ function renderBackground(x, y) {
   context.strokeStyle = 'white';
   context.lineWidth = 0.5;
 
-  // Start positions for grid
-  const startX = x - (x % gridSize);
-  const startY = y - (y % gridSize);
-
   // Calculate the boundary in canvas coordinates
   const boundaryX = canvas.width / 2 - x;
   const boundaryY = canvas.height / 2 - y;
@@ -129,7 +125,7 @@ function renderPlayer(me, player) {
   context.translate(canvasX, canvasY);
   context.rotate(direction);
   context.drawImage(
-    getAsset('ship.svg'),
+    getAsset('plane.png'),
     -PLAYER_RADIUS,
     -PLAYER_RADIUS,
     PLAYER_RADIUS * 2,
@@ -169,8 +165,10 @@ function renderBullet(me, bullet) {
 // 메인 메뉴를 그리는 함수
 function renderMainMenu() {
   const t = Date.now() / 7500;
-  const x = MAP_SIZE / 2 + 800 * Math.cos(t);
-  const y = MAP_SIZE / 2 + 800 * Math.sin(t);
+  // const x = MAP_SIZE / 2 + 800 * Math.cos(t);
+  // const y = MAP_SIZE / 2 + 800 * Math.sin(t);
+  const x = MAP_SIZE / 2;
+  const y = MAP_SIZE / 2;
   renderBackground(x, y);
 
   // 다음 프레임에서 이 render 함수를 다시 실행
