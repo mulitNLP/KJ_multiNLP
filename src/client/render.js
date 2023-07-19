@@ -26,30 +26,33 @@ function setCanvasDimensions() {
 
 }
 
+// 화면 크기가 변경될 때 캔버스 크기를 업데이트
 window.addEventListener('resize', debounce(40, setCanvasDimensions));
 
 let animationFrameRequestId;
 
+// 게임의 현재 상태를 그리는 함수
 function render() {
   const { me, others, bullets } = getCurrentState();
   if (me) {
-    // Draw background
+
+    // 배경 그리기
     renderBackground(me.x, me.y);
 
-    // Draw boundaries
+    // 경계선 그리기
     context.strokeStyle = 'white';
     context.lineWidth = 5;
     context.strokeRect(canvas.width / 2 - me.x, canvas.height / 2 - me.y, MAP_SIZE, MAP_SIZE);
 
-    // Draw all bullets
+    // 모든 총알 그리기
     bullets.forEach(renderBullet.bind(null, me));
 
-    // Draw all players
+    // 모든 플레이어 그리기
     renderPlayer(me, me);
     others.forEach(renderPlayer.bind(null, me));
   }
 
-  // Rerun this render function on the next frame
+  // 다음 프레임에서 이 render 함수를 다시 실행
   animationFrameRequestId = requestAnimationFrame(render);
 }
 
@@ -76,13 +79,13 @@ function renderBackground(x, y) {
   context.fillRect(0, 0, canvas.width, canvas.height);
 }
 
-// Renders a ship at the given coordinates
+// 주어진 좌표에서 배를 그리는 함수
 function renderPlayer(me, player) {
   const { x, y, direction } = player;
   const canvasX = canvas.width / 2 + x - me.x;
   const canvasY = canvas.height / 2 + y - me.y;
 
-  // Draw ship
+  // 배 그리기
   context.save();
   context.translate(canvasX, canvasY);
   context.rotate(direction);
@@ -95,7 +98,7 @@ function renderPlayer(me, player) {
   );
   context.restore();
 
-  // Draw health bar
+  // 체력 바 그리기
   context.fillStyle = 'white';
   context.fillRect(
     canvasX - PLAYER_RADIUS,
@@ -112,6 +115,7 @@ function renderPlayer(me, player) {
   );
 }
 
+// 총알을 그리는 함수
 function renderBullet(me, bullet) {
   const { x, y } = bullet;
   context.drawImage(
@@ -123,27 +127,28 @@ function renderBullet(me, bullet) {
   );
 }
 
+// 메인 메뉴를 그리는 함수
 function renderMainMenu() {
   const t = Date.now() / 7500;
   const x = MAP_SIZE / 2 + 800 * Math.cos(t);
   const y = MAP_SIZE / 2 + 800 * Math.sin(t);
   renderBackground(x, y);
 
-  // Rerun this render function on the next frame
+  // 다음 프레임에서 이 render 함수를 다시 실행
   animationFrameRequestId = requestAnimationFrame(renderMainMenu);
 }
 
+// 초기 애니메이션 프레임 요청
 animationFrameRequestId = requestAnimationFrame(renderMainMenu);
 
-// Replaces main menu rendering with game rendering.
+// 메인 메뉴 렌더링을 게임 렌더링으로 교체하는 함수
 export function startRendering() {
   cancelAnimationFrame(animationFrameRequestId);
   animationFrameRequestId = requestAnimationFrame(render);
 }
 
-// Replaces game rendering with main menu rendering.
+// 게임 렌더링을 메인 메뉴 렌더링으로 교체하는 함수
 export function stopRendering() {
   cancelAnimationFrame(animationFrameRequestId);
   animationFrameRequestId = requestAnimationFrame(renderMainMenu);
 }
-
