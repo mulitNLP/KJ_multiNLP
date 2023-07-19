@@ -32,6 +32,12 @@ class Game {
     }
   }
 
+  handleInputKeyBoard(socket, key, updown) {
+    if (this.players[socket.id]) {
+      this.players[socket.id].setKeys(key, updown);
+    }
+  }
+
   update() {
     // Calculate time elapsed
     const now = Date.now();
@@ -114,5 +120,10 @@ class Game {
     };
   }
 }
+
+/* -------------------------------------------------- */
+
+
+/* -------------------------------------------------- */
 
 module.exports = Game;

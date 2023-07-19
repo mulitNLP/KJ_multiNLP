@@ -29,6 +29,7 @@ class Object {
       y: this.y,
     };
   }
+
 }
 
 module.exports = Object;

@@ -1,5 +1,5 @@
 module.exports = Object.freeze({
-  PLAYER_RADIUS: 20,
+  PLAYER_RADIUS: 30,
   PLAYER_MAX_HP: 100,
   PLAYER_SPEED: 200,
   PLAYER_FIRE_COOLDOWN: 0.25,
@@ -17,5 +17,6 @@ module.exports = Object.freeze({
     GAME_UPDATE: 'update',
     INPUT: 'input',
     GAME_OVER: 'dead',
+    INPUTKEYBOARD: 'inputkeyboard',
   },
 });
