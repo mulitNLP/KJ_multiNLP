@@ -1,0 +1,22 @@
+{
+  "type" : "skilldata",
+  "skills": [
+    {
+      "skillId": "1",
+      "name": "defaultskill",
+      "damage": "10",
+      "skillType": "NONE"
+    },
+    {
+      "skillId": "2",
+      "name": "blet",
+      "damage": "5",
+      "skillType": "BULLET",
+      "projectile": {
+        "name": "bullllllllettt",
+        "speed": "20.0",
+        "range": "10"
+      }
+    }
+  ]
+}
