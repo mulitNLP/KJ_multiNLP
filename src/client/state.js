@@ -6,37 +6,46 @@ import { updateLeaderboard } from './leaderboard';
 // This makes gameplay smoother and lag less noticeable.
 const RENDER_DELAY = 100;
 
+// 게임 업데이트를 처리하기 위한 변수들
 const gameUpdates = [];
 let gameStart = 0;
 let firstServerTimestamp = 0;
 
+// 초기 상태를 설정하는 함수
 export function initState() {
   gameStart = 0;
   firstServerTimestamp = 0;
 }
 
+// 서버로부터 받은 게임 업데이트를 처리하는 함수
 export function processGameUpdate(update) {
+
+  // 첫 업데이트라면, 서버의 타임스탬프를 기록하고 게임 시작 시간을 설정
   if (!firstServerTimestamp) {
     firstServerTimestamp = update.t;
     gameStart = Date.now();
   }
+
+  // 업데이트를 배열에 추가
   gameUpdates.push(update);
 
+  // 리더보드 업데이트
   updateLeaderboard(update.leaderboard);
 
-  // Keep only one game update before the current server time
+  // 현재 서버 시간 이전의 첫 번째 게임 업데이트만 유지
   const base = getBaseUpdate();
   if (base > 0) {
     gameUpdates.splice(0, base);
   }
 }
 
+// 현재 서버 시간을 계산하는 함수
 function currentServerTime() {
   return firstServerTimestamp + (Date.now() - gameStart) - RENDER_DELAY;
 }
 
-// Returns the index of the base update, the first game update before
-// current server time, or -1 if N/A.
+// 현재 서버 시간 이전의 첫 번째 게임 업데이트의 인덱스를 반환하거나,
+// 해당하는 업데이트가 없다면 -1을 반환하는 함수
 function getBaseUpdate() {
   const serverTime = currentServerTime();
   for (let i = gameUpdates.length - 1; i >= 0; i--) {
@@ -47,7 +56,7 @@ function getBaseUpdate() {
   return -1;
 }
 
-// Returns { me, others, bullets }
+// 현재 상태 반환 { me, others, bullets }
 export function getCurrentState() {
   if (!firstServerTimestamp) {
     return {};
@@ -56,8 +65,8 @@ export function getCurrentState() {
   const base = getBaseUpdate();
   const serverTime = currentServerTime();
 
-  // If base is the most recent update we have, use its state.
-  // Otherwise, interpolate between its state and the state of (base + 1).
+  // base가 가장 최근의 업데이트인 경우, 해당 업데이트의 상태를 사용
+  // 그렇지 않은 경우, base 업데이트와 (base + 1) 업데이트의 상태를 보간
   if (base < 0 || base === gameUpdates.length - 1) {
     return gameUpdates[gameUpdates.length - 1];
   } else {
@@ -72,6 +81,7 @@ export function getCurrentState() {
   }
 }
 
+// 두 객체 사이를 보간하는 함수
 function interpolateObject(object1, object2, ratio) {
   if (!object2) {
     return object1;
@@ -88,6 +98,7 @@ function interpolateObject(object1, object2, ratio) {
   return interpolated;
 }
 
+// 객체 배열을 보간하는 함수
 function interpolateObjectArray(objects1, objects2, ratio) {
   return objects1.map(o => interpolateObject(o, objects2.find(o2 => o.id === o2.id), ratio));
 }
@@ -95,17 +106,18 @@ function interpolateObjectArray(objects1, objects2, ratio) {
 // Determines the best way to rotate (cw or ccw) when interpolating a direction.
 // For example, when rotating from -3 radians to +3 radians, we should really rotate from
 // -3 radians to +3 - 2pi radians.
+// 방향을 보간할 때 회전 방향 (시계 방향 또는 반시계 방향)을 결정하는 함수
 function interpolateDirection(d1, d2, ratio) {
   const absD = Math.abs(d2 - d1);
   if (absD >= Math.PI) {
-    // The angle between the directions is large - we should rotate the other way
+    // 두 방향 사이의 각도가 크면, 다른 방향으로 회전
     if (d1 > d2) {
       return d1 + (d2 + 2 * Math.PI - d1) * ratio;
     } else {
       return d1 - (d2 - 2 * Math.PI - d1) * ratio;
     }
   } else {
-    // Normal interp
+    // 일반 보간
     return d1 + (d2 - d1) * ratio;
   }
 }

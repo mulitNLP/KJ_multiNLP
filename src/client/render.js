@@ -13,11 +13,10 @@ const canvas = document.getElementById('game-canvas');
 const context = canvas.getContext('2d');
 setCanvasDimensions();
 
-
-
+// 캔버스의 크기를 설정하는 함수
 function setCanvasDimensions() {
-  // On small screens (e.g. phones), we want to "zoom out" so players can still see at least
-  // 800 in-game units of width.
+  // 작은 화면 (예: 핸드폰)에서는 "확대/축소"를 해서 플레이어가 최소한
+  // 800개의 게임 유닛 너비를 볼 수 있게 한다.
   // const scaleRatio = Math.max(1, 800 / window.innerWidth);
   // canvas.width = scaleRatio * window.innerWidth;
   // canvas.height = scaleRatio * window.innerHeight;
