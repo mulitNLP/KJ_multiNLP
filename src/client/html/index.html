@@ -51,7 +51,28 @@
       <tr><td></td><td></td></tr>
       <tr><td></td><td></td></tr>
     </table>
-    <input id="input-bar">
+    <input id="input-bar" type="text" placeholder="Enter chat...">
+    <script>
+      let chatInput = document.getElementById('chat-input');
+
+      window.addEventListener('keydown', function(event) {
+        // 엔터 키가 눌렸는지 확인
+        console.log(event);
+        if (event.key === 'Enter') {
+          // 채팅창이 이미 활성화된 상태라면
+          if (chatInput.style.display !== 'none') {
+            // 채팅 전송 처리 (여기서는 단순히 콘솔에 로그를 출력)
+            console.log('Chat message:', chatInput.value);
+            chatInput.value = '';
+          }
+          // 채팅창 활성화/비활성화 전환
+          chatInput.style.display = chatInput.style.display === 'none' ? 'block' : 'none';
+          if(chatInput.style.display === 'block'){
+            chatInput.focus();
+          }
+        }
+      });
+    </script>
   </div>
     
   <div id="disconnect-modal" class="hidden">
