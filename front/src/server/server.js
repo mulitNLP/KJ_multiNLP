@@ -32,6 +32,7 @@ const io = socketio(server);
 io.on('connection', socket => {
   console.log('Player connected!', socket.id);
 
+  socket.on(Constants.MSG_TYPES.INPUTKEYBOARD, handleInputKeyBoard);
   socket.on(Constants.MSG_TYPES.JOIN_GAME, joinGame);
   socket.on(Constants.MSG_TYPES.INPUT, handleInput);
   socket.on('disconnect', onDisconnect);
@@ -50,4 +51,8 @@ function handleInput(dir) {
 
 function onDisconnect() {
   game.removePlayer(this);
+}
+
+function handleInputKeyBoard(key, updown) {
+  game.handleInputKeyBoard(this, key, updown);
 }

@@ -4,6 +4,8 @@ const ASSET_NAMES = [
   'bullet.svg',
   'icon64.png',
   'plane.png',
+  'octagon.png',
+  'circle.png',
 ];
 
 // assets을 저장할 객체
