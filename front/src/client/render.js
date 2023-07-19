@@ -85,30 +85,33 @@ function renderBackground(x, y) {
   // Draw grid
   const gridSize = 50; // Define the size of the grid here
   context.strokeStyle = 'white';
-  context.lineWidth = 1;
+  context.lineWidth = 0.5;
 
-  // Start positions for grid
-  const startX = x - (x % gridSize);
-  const startY = y - (y % gridSize);
+  // Calculate the boundary in canvas coordinates
+  const boundaryX = canvas.width / 2 - x;
+  const boundaryY = canvas.height / 2 - y;
 
   // Draw vertical lines
-  for (let i = startX; i < MAP_SIZE; i += gridSize) {
+  for (let i = 0; i < MAP_SIZE; i += gridSize) {
     const canvasX = canvas.width / 2 + i - x;
-    context.beginPath();
-    context.moveTo(canvasX, 0);
-    context.lineTo(canvasX, canvas.height);
-    context.stroke();
+    if (canvasX >= boundaryX && canvasX <= boundaryX + MAP_SIZE) {
+      context.beginPath();
+      context.moveTo(canvasX, boundaryY);
+      context.lineTo(canvasX, boundaryY + MAP_SIZE);
+      context.stroke();
+    }
   }
 
   // Draw horizontal lines
-  for (let i = startY; i < MAP_SIZE; i += gridSize) {
+  for (let i = 0; i < MAP_SIZE; i += gridSize) {
     const canvasY = canvas.height / 2 + i - y;
-    context.beginPath();
-    context.moveTo(0, canvasY);
-    context.lineTo(canvas.width, canvasY);
-    context.stroke();
+    if (canvasY >= boundaryY && canvasY <= boundaryY + MAP_SIZE) {
+      context.beginPath();
+      context.moveTo(boundaryX, canvasY);
+      context.lineTo(boundaryX + MAP_SIZE, canvasY);
+      context.stroke();
+    }
   }
-
 }
 
 // 주어진 좌표에서 배를 그리는 함수
@@ -122,7 +125,7 @@ function renderPlayer(me, player) {
   context.translate(canvasX, canvasY);
   context.rotate(direction);
   context.drawImage(
-    getAsset('ship.svg'),
+    getAsset('circle.png'),
     -PLAYER_RADIUS,
     -PLAYER_RADIUS,
     PLAYER_RADIUS * 2,
@@ -130,21 +133,21 @@ function renderPlayer(me, player) {
   );
   context.restore();
 
-  // 체력 바 그리기
-  context.fillStyle = 'white';
-  context.fillRect(
-    canvasX - PLAYER_RADIUS,
-    canvasY + PLAYER_RADIUS + 8,
-    PLAYER_RADIUS * 2,
-    2,
-  );
-  context.fillStyle = 'red';
-  context.fillRect(
-    canvasX - PLAYER_RADIUS + PLAYER_RADIUS * 2 * player.hp / PLAYER_MAX_HP,
-    canvasY + PLAYER_RADIUS + 8,
-    PLAYER_RADIUS * 2 * (1 - player.hp / PLAYER_MAX_HP),
-    2,
-  );
+  // // 체력 바 그리기
+  // context.fillStyle = 'white';
+  // context.fillRect(
+  //   canvasX - PLAYER_RADIUS,
+  //   canvasY + PLAYER_RADIUS + 8,
+  //   PLAYER_RADIUS * 2,
+  //   2,
+  // );
+  // context.fillStyle = 'red';
+  // context.fillRect(
+  //   canvasX - PLAYER_RADIUS + PLAYER_RADIUS * 2 * player.hp / PLAYER_MAX_HP,
+  //   canvasY + PLAYER_RADIUS + 8,
+  //   PLAYER_RADIUS * 2 * (1 - player.hp / PLAYER_MAX_HP),
+  //   2,
+  // );
 }
 
 // 총알을 그리는 함수
@@ -162,8 +165,10 @@ function renderBullet(me, bullet) {
 // 메인 메뉴를 그리는 함수
 function renderMainMenu() {
   const t = Date.now() / 7500;
-  const x = MAP_SIZE / 2 + 800 * Math.cos(t);
-  const y = MAP_SIZE / 2 + 800 * Math.sin(t);
+  // const x = MAP_SIZE / 2 + 800 * Math.cos(t);
+  // const y = MAP_SIZE / 2 + 800 * Math.sin(t);
+  const x = MAP_SIZE / 2;
+  const y = MAP_SIZE / 2;
   renderBackground(x, y);
 
   // 다음 프레임에서 이 render 함수를 다시 실행

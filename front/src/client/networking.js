@@ -43,6 +43,7 @@ export const updateDirection = throttle(20, dir => {
   socket.emit(Constants.MSG_TYPES.INPUT, dir);
 });
 
+<<<<<<< HEAD
 // websocket connection
 const roomId = 1;
 const websocket = new WebSocket(`ws://localhost:8080/room/${roomId}`);
@@ -118,3 +119,8 @@ export const wsupdateDirection = throttle(20, dir => {
   websocket.send(JSON.stringify(message));
 });
 
+/* -------------------------------------------------- */
+
+export const updateInputKeyBoard = throttle(20 , (key,updown) => {
+  socket.emit(Constants.MSG_TYPES.INPUTKEYBOARD, key,updown);
+});
