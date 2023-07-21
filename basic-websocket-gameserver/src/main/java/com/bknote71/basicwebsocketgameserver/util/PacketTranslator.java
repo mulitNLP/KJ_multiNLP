@@ -7,17 +7,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.catalina.mapper.Mapper;
 
 public class PacketTranslator {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
     static {
-        MAPPER.enableDefaultTyping();
         MAPPER.setVisibility(
                 MAPPER.getSerializationConfig().getDefaultVisibilityChecker()
                         .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
         );
+        MAPPER.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }
 
     public static String json(Protocol packet) {

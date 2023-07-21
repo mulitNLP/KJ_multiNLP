@@ -4,5 +4,5 @@ public enum CreatureState {
     IDLE,
     MOVING,
     SKILL,
-    DEAF,
+    DEAD,
 }

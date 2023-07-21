@@ -22,6 +22,8 @@ public class ServerPacketManager {
     private Map<ProtocolType, BiConsumer<ClientSession, Protocol>> handlers = new HashMap<>();
 
     public void register() {
+        onRecvs.put(ProtocolType.C_EnterGame, (session, message, protocol) -> makePacket(session, message, protocol, CEnterGame.class));
+        handlers.put(ProtocolType.C_EnterGame, PacketHandler::CEnterGameHandler);
         onRecvs.put(ProtocolType.C_Chat, (session, message, protocol) -> makePacket(session, message, protocol, CChat.class));
         handlers.put(ProtocolType.C_Chat, PacketHandler::CChatHandler);
         onRecvs.put(ProtocolType.C_Move, (session, message, protocol) -> makePacket(session, message, protocol, CMove.class));

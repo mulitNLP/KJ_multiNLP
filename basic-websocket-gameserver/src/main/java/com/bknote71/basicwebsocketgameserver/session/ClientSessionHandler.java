@@ -27,27 +27,8 @@ public class ClientSessionHandler extends TextWebSocketHandler {
         log.info("connected established");
 
         // 클라이언트 세션 생성 및 추가
-        ClientSession clientSession = ClientSessionManager.Instance.generate(session);
-
-        // 플레이어 생성, 위치는 랜덤으로 생성
-        Player player = ObjectManager.Instance.add(Player.class);
-        ObjectInfo info = player.getInfo();
-        PositionInfo posInfo = info.getPosInfo();
-        double x = ThreadLocalRandom.current().nextDouble(-100, 100);
-        double y = ThreadLocalRandom.current().nextDouble(-100, 100);
-        posInfo.setPos(new Vector2d(x, y));
-        posInfo.setDir(MoveDir.North); // 이것도 나중에는 랜덤으로
-        posInfo.setState(CreatureState.IDLE);
-        info.setName("Player_" + player.getPlayerId());
-        info.setStatInfo(null);
-        player.setSession(clientSession);
-
-        clientSession.setMyPlayer(player);
-
-        // 방 찾기
-        Integer roomId = getRoomId(session);
-        GameRoom gameRoom = RoomManager.Instance.find(roomId);
-        gameRoom.push(gameRoom::enterGame, player);
+        ClientSessionManager.Instance.generate(session);
+        // ServerPacketManager.Instance.handlePacket(clientSession, new TextMessage("connect"));
     }
 
     @Override
@@ -69,16 +50,14 @@ public class ClientSessionHandler extends TextWebSocketHandler {
         // leave room
         ClientSession clientSession = ClientSessionManager.Instance.find(session.getId());
         GameRoom gameRoom = clientSession.getMyPlayer().getGameRoom();
+        if (gameRoom == null)
+            return;
         Player sessionPlayer = clientSession.getMyPlayer();
+        if (sessionPlayer == null)
+            return;
+
         gameRoom.push(gameRoom::leaveGame, sessionPlayer.getPlayerId());
         ClientSessionManager.Instance.remove(clientSession);
-    }
-
-    public Integer getRoomId(WebSocketSession session) {
-        String[] paths = session.getUri().getPath().split("/");
-        // path: /room/{roomId}
-        Integer roomId = Integer.valueOf(paths[2]);
-        return roomId;
     }
 
 }

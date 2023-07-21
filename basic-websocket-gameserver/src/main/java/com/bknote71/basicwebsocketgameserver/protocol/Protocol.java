@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         include = JsonTypeInfo.As.PROPERTY,
         property = "type")
 @JsonSubTypes({
+        @JsonSubTypes.Type(value = CEnterGame.class, name = "centergame"),
         @JsonSubTypes.Type(value = CChat.class, name = "cchat"),
         @JsonSubTypes.Type(value = CMove.class, name = "cmove"),
         @JsonSubTypes.Type(value = CSkill.class, name = "cskill")
