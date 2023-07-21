@@ -30,9 +30,7 @@ public class PacketHandler {
         PositionInfo posInfo = info.getPosInfo();
 
         info.setName(enterPacket.getUsername());
-        double x = ThreadLocalRandom.current().nextDouble(500, 1500);
-        double y = ThreadLocalRandom.current().nextDouble(500, 1500);
-        posInfo.setPos(new Vector2d(x, y));
+        posInfo.setPos(Vector2d.createRandom());
         posInfo.setState(CreatureState.IDLE);
 
         // stat

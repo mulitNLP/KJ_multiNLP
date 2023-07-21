@@ -40,6 +40,33 @@ public class GameRoom extends JobSerializer {
         this.gameMap = new GameMap(0, 2000, 0, 2000);
     }
 
+    private TimerTask updateRoomTask;
+    private TimerTask createMeteorTask;
+    // register time task
+    public void register() {
+        // tick room
+        Timer updateRoomTimer = new Timer();
+        this.updateRoomTask = new TimerTask() {
+            @Override
+            public void run() {
+                update();
+            }
+        };
+        updateRoomTimer.schedule(updateRoomTask, 0, 1000 / 60); // delay, interval
+        RoomManager.Instance.registerTimerTask(updateRoomTimer);
+
+        Timer createMeteorTimer = new Timer();
+        createMeteorTask = new TimerTask() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 5; ++i)
+                    createMeteor();
+            }
+        };
+        createMeteorTimer.schedule(createMeteorTask, 1000, 3000);
+        RoomManager.Instance.registerTimerTask(createMeteorTimer);
+    }
+
     public void update() {
         // update packet 보내기
         SUpdate updatePacket = new SUpdate();
@@ -273,6 +300,19 @@ public class GameRoom extends JobSerializer {
                 push(this::enterGame, bullet);
             }
         }
+    }
+
+    private void createMeteor() {
+        Meteor meteor = ObjectManager.Instance.add(Meteor.class);
+        if (meteor == null)
+            return;
+
+        // init bullet, bullet 은 moveDir 가 필요 없음!
+        PositionInfo meteorPosInfo = new PositionInfo();
+        meteorPosInfo.setPos(Vector2d.createRandom());
+        meteor.setDirvec(Vector2d.createRandom());
+        meteor.setPosInfo(meteorPosInfo);
+        push(this::enterGame, meteor);
     }
 
     public boolean cango(Vector2d pos) {

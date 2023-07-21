@@ -33,6 +33,7 @@ public class GameMap {
 
     public boolean cango(Vector2d pos) {
         // pos 좌표가 박스 안에 있어야 한다.
+        System.out.println("pos? " + pos.x + " " + pos.y + " can't go? " + (pos.x < minX || pos.x > maxX || pos.y < minY || pos.y > maxY));
         if (pos.x < minX || pos.x > maxX)
             return false;
         if (pos.y < minY || pos.y > maxY)
