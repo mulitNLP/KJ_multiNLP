@@ -44,7 +44,11 @@ public class DataManager {
         try {
             String fullPath = env.getProperty("data_path") + path + ".json";
             Resource resource = resourceLoader.getResource(fullPath);
+<<<<<<< HEAD
             byte[] bytes = Files.readAllBytes(resource.getFile().toPath());
+=======
+            byte[] bytes = resource.getInputStream().readAllBytes();
+>>>>>>> origin/main
             String text = new String(bytes);
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(text, new TypeReference<>() {});
