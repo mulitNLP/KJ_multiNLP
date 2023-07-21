@@ -2,6 +2,9 @@ package com.bknote71.basicwebsocketgameserver.game;
 
 import com.bknote71.basicwebsocketgameserver.protocol.info.MoveDir;
 import lombok.Data;
+import org.apache.tomcat.jni.Thread;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 @Data
 public class Vector2d {
@@ -16,6 +19,12 @@ public class Vector2d {
     public Vector2d(double x, double y) {
         this.x = x;
         this.y = y;
+    }
+
+    public static Vector2d createRandom(double origin, double bound) {
+        double mx = ThreadLocalRandom.current().nextDouble(origin, bound);
+        double my = ThreadLocalRandom.current().nextDouble(origin, bound);
+        return new Vector2d(mx, my);
     }
 
     public static Vector2d north() {

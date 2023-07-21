@@ -53,7 +53,7 @@ export const connect = onGameOver => (
           meteors: message.update.meteors,
           leaderboard: message.update.leaderboard,
         };
-
+        // console.log(update);
         processGameUpdate(update);
 
       } else if (message.type === 'smove') { // move update (움직임 패킷)

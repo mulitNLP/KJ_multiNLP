@@ -40,6 +40,33 @@ public class GameRoom extends JobSerializer {
         this.gameMap = new GameMap(0, 2000, 0, 2000);
     }
 
+    private TimerTask updateRoomTask;
+    private TimerTask createMeteorTask;
+    // register time task
+    public void register() {
+        // tick room
+        Timer updateRoomTimer = new Timer();
+        this.updateRoomTask = new TimerTask() {
+            @Override
+            public void run() {
+                update();
+            }
+        };
+        updateRoomTimer.schedule(updateRoomTask, 0, 1000 / 60); // delay, interval
+        RoomManager.Instance.registerTimerTask(updateRoomTimer);
+
+        Timer createMeteorTimer = new Timer();
+        createMeteorTask = new TimerTask() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 10; ++i)
+                    createMeteor();
+            }
+        };
+        createMeteorTimer.schedule(createMeteorTask, 1000, 3000);
+        RoomManager.Instance.registerTimerTask(createMeteorTimer);
+    }
+
     public void update() {
         // update packet 보내기
         SUpdate updatePacket = new SUpdate();
@@ -54,8 +81,9 @@ public class GameRoom extends JobSerializer {
         }
 
         for (Meteor meteor : meteors.values()) {
+
             meteor.update();
-            update.bullets.add(new UpdateInfo.BulletInfo(meteor.getId(), meteor.pos().x, meteor.pos().y));
+            update.meteors.add(new UpdateInfo.MeteorInfo(meteor.getId(), meteor.pos().x, meteor.pos().y));
         }
 
         flush();
@@ -85,6 +113,7 @@ public class GameRoom extends JobSerializer {
             players.put(player.getPlayerId(), player);
             player.init(gameMap.sizeX());
             player.setGameRoom(this);
+            player.getInfo().getPosInfo().setPos(Vector2d.createRandom(0, gameMap.sizeX()));
 
             // room 과 세션 이어주기
             ClientSession session = player.getSession();
@@ -94,10 +123,10 @@ public class GameRoom extends JobSerializer {
             // SEnterGame: "내가" 게임룸에 입장함을 알림
             SEnterGame enterPacket = new SEnterGame();
             enterPacket.setPlayer(player.getInfo());
-            // enterPacket.update(); // tmp code
             session.send(enterPacket);
 
             // SSpwan: 나에게 주변 플레이어들 정보 넘김 (나 제외)
+            /*
             SSpawn spawnPacket = new SSpawn();
             for (Player p : players.values()) {
                 if (p != player)
@@ -111,7 +140,8 @@ public class GameRoom extends JobSerializer {
             for (Meteor m : meteors.values())
                 spawnPacket.add(m.getInfo());
 
-            session.send(spawnPacket);
+            session.send(spawnPacket);*/
+
         } else if (gameObjectType == GameObjectType.Bullet) {
             Bullet bullet = (Bullet) gameObject;
             log.info("bullet({}) enter game target: {}", bullet.getId(), bullet.getTarget().getId());
@@ -125,12 +155,13 @@ public class GameRoom extends JobSerializer {
         }
 
         // 주변 플레이어들에게 내 스폰 정보를 넘김 (당연히 나 제외)
+        /*
         SSpawn resSpawnPacket = new SSpawn();
         resSpawnPacket.add(gameObject.getInfo());
         for (Player p : players.values()) {
             if (p.getPlayerId() != gameObject.getId())
                 p.getSession().send(resSpawnPacket);
-        }
+        }*/
     }
 
     public void leaveGame(int objectId) {
@@ -273,6 +304,19 @@ public class GameRoom extends JobSerializer {
                 push(this::enterGame, bullet);
             }
         }
+    }
+
+    private void createMeteor() {
+        Meteor meteor = ObjectManager.Instance.add(Meteor.class);
+        if (meteor == null)
+            return;
+
+        // init bullet, bullet 은 moveDir 가 필요 없음!
+        PositionInfo meteorPosInfo = new PositionInfo();
+        meteorPosInfo.setPos(Vector2d.createRandom(0, gameMap.sizeX()));
+        meteor.setDirvec(Vector2d.createRandom(-1, 1));
+        meteor.setPosInfo(meteorPosInfo);
+        push(this::enterGame, meteor);
     }
 
     public boolean cango(Vector2d pos) {

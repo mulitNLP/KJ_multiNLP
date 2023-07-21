@@ -66,16 +66,13 @@ public class RoomManager {
         }
     }
 
-    static List<Timer> timers = new ArrayList<>();
-    public static void tickRoom(GameRoom room, int tick) {
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                room.update();
-            }
-        }, 0, tick); // delay, interval
-        timers.add(timer);
+    List<Timer> timers = new ArrayList<>();
+    Object timerLock = new Object();
+
+    public void registerTimerTask(Timer timer) {
+        synchronized (timerLock) {
+            timers.add(timer);
+        }
     }
 
 }
