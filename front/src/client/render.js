@@ -8,6 +8,7 @@ import renderBackground from './render/background';
 import renderPlayer from './render/player';
 import renderLine from './render/line';
 import renderMeteor from './render/meteor';
+import renderTarget from './render/target';
 
 const Constants = require('../shared/constants');
 
@@ -46,6 +47,7 @@ function render() {
     // 경계선 그리기
     renderLine(me);
 
+    renderTarget();
     // 모든 총알 그리기
     bullets.forEach(renderBullet.bind(null, me));
     meteors.forEach(renderMeteor.bind(null, me));
