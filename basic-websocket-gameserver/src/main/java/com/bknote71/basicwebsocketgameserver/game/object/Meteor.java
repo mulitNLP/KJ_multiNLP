@@ -44,7 +44,7 @@ public class Meteor extends GameObject {
         if (nextMoveTick > System.currentTimeMillis())
             return;
 
-        int tick = (int) (1000 / speed);
+        int tick = (int) (1000 / 60);
         nextMoveTick = System.currentTimeMillis() + tick;
 
         // 무조건 dirvec 방향으로 움직임: 히트 or 이동(소멸) 둘 중 하나이다!

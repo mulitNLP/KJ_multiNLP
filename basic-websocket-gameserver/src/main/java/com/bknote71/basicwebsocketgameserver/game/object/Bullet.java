@@ -41,7 +41,7 @@ public class Bullet extends GameObject {
             return;
 
         // next move tick 갱신
-        long tick = (long) (1000 / speed); // tick(대기 시간) = 1초(도달 거리)/(속도s?)
+        long tick = (long) (1000 / 60); // tick(대기 시간) = 1초(도달 거리)/(속도s?)
         nextMoveTick = System.currentTimeMillis() + tick;
         // System.out.println("speed, range: " + speed + " " + range);
         // 다음 위치로 갈 수 있으면 이동한다.
