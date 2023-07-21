@@ -40,32 +40,34 @@ public class GameRoom extends JobSerializer {
     }
 
     public void update() {
+        // update packet 보내기
+        SUpdate updatePacket = new SUpdate();
+        UpdateInfo update = new UpdateInfo();
+        update.leaderboard = new ArrayList<>();
+        update.t = System.currentTimeMillis();
+
         // meteor 및 bullet(projectile) update
         for (Bullet bullet : bullets.values()) {
             bullet.update();
+            update.bullets.add(new UpdateInfo.BulletInfo(bullet.getId(), bullet.pos().x, bullet.pos().y));
         }
 
         for (Meteor meteor : meteors.values()) {
             meteor.update();
+            update.bullets.add(new UpdateInfo.BulletInfo(meteor.getId(), meteor.pos().x, meteor.pos().y));
         }
 
         flush();
 
-        // update packet 보내기
-        SUpdate updatePacket = new SUpdate();
-        UpdateInfo updateInfo = new UpdateInfo();
-        updateInfo.leaderboard = new ArrayList<>();
-        updateInfo.t = System.currentTimeMillis();
-        // players 에 대한 정보 모으기
-        players.values().stream()
-                .forEach(player -> {
-                            player.update();
-                            updateInfo.infos.add(
-                                    new UpdateInfo.UpdatePosInfo(player.getDirection(), player.hp(), player.getInfo().getName(), player.pos().x, player.pos().y)
-                            );
-                        }
-                );
-        updatePacket.update = updateInfo;
+        // flush 후에 player update 하기 위함 (move 반영)
+        for (Player player : players.values()) {
+            player.update();
+            update.others.add(
+                    new UpdateInfo.UpdatePos(player.getDirection(), player.hp(), player.getId(), player.pos().x, player.pos().y)
+            );
+        }
+
+        updatePacket.update = update;
         broadcast(updatePacket);
     }
 
@@ -91,7 +93,7 @@ public class GameRoom extends JobSerializer {
             // SEnterGame: "내가" 게임룸에 입장함을 알림
             SEnterGame enterPacket = new SEnterGame();
             enterPacket.setPlayer(player.getInfo());
-            enterPacket.update(); // tmp code
+            // enterPacket.update(); // tmp code
             session.send(enterPacket);
 
             // SSpwan: 나에게 주변 플레이어들 정보 넘김 (나 제외)
