@@ -1,15 +1,20 @@
 const Constants = require('../shared/constants');
 const Player = require('./player');
-const applyCollisions = require('./collisions');
+const Meteor = require('./meteor');
+const bulletCollisions = require('./bulletcollisions');
+const meteorCollisions = require('./meteorcollisions');
 
 class Game {
   constructor() {
     this.sockets = {};
     this.players = {};
     this.bullets = [];
+    this.meteors = [];
     this.lastUpdateTime = Date.now();
     this.shouldSendUpdate = false;
+    
     setInterval(this.update.bind(this), 1000 / 60);
+    
   }
 
   addPlayer(socket, username) {
@@ -19,6 +24,7 @@ class Game {
     const x = Constants.MAP_SIZE * (0.25 + Math.random() * 0.5);
     const y = Constants.MAP_SIZE * (0.25 + Math.random() * 0.5);
     this.players[socket.id] = new Player(socket.id, username, x, y);
+    
   }
 
   removePlayer(socket) {
@@ -53,6 +59,35 @@ class Game {
       }
     });
     this.bullets = this.bullets.filter(bullet => !bulletsToRemove.includes(bullet));
+    // Apply collisions, give players score for hitting bullets
+    const destroyedBullets = bulletCollisions(Object.values(this.players), this.bullets);
+    destroyedBullets.forEach(b => {
+      if (this.players[b.parentID]) {
+        this.players[b.parentID].onDealtDamage();
+      }
+    });
+    this.bullets = this.bullets.filter(bullet => !destroyedBullets.includes(bullet));
+
+    // 맵 끝에 도착하면 삭제
+    const meteorsToRemove = [];
+    this.meteors.forEach(meteor => {
+      if (meteor.update(dt)) {
+        // 맵끝에 도착했으니까 삭제
+        meteorsToRemove.push(meteor);
+      }
+    });
+    this.meteors = this.meteors.filter(meteor => !meteorsToRemove.includes(meteor));
+
+    // 플레이어랑 부딪히면 삭제
+    const destroyedMeteors = meteorCollisions(Object.values(this.players), this.meteors);
+    destroyedMeteors.forEach(b => {
+      if (this.players[b.parentID]) {
+        this.players[b.parentID].onDealtDamage();
+      }
+    });
+    this.meteors = this.meteors.filter(meteor => !destroyedBullets.includes(meteor));
+
+
 
     // Update each player
     Object.keys(this.sockets).forEach(playerID => {
@@ -62,15 +97,6 @@ class Game {
         this.bullets.push(newBullet);
       }
     });
-
-    // Apply collisions, give players score for hitting bullets
-    const destroyedBullets = applyCollisions(Object.values(this.players), this.bullets);
-    destroyedBullets.forEach(b => {
-      if (this.players[b.parentID]) {
-        this.players[b.parentID].onDealtDamage();
-      }
-    });
-    this.bullets = this.bullets.filter(bullet => !destroyedBullets.includes(bullet));
 
     // Check if any players are dead
     Object.keys(this.sockets).forEach(playerID => {
@@ -95,7 +121,7 @@ class Game {
       this.shouldSendUpdate = true;
     }
   }
-
+  
   getLeaderboard() {
     return Object.values(this.players)
       .sort((p1, p2) => p2.score - p1.score)
