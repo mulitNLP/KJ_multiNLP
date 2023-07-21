@@ -1,10 +1,12 @@
 package com.bknote71.basicwebsocketgameserver.game.object;
 
+import com.bknote71.basicwebsocketgameserver.data.DataManager;
 import com.bknote71.basicwebsocketgameserver.game.Vector2d;
 import com.bknote71.basicwebsocketgameserver.protocol.info.GameObjectType;
 import com.bknote71.basicwebsocketgameserver.game.room.GameMap;
 import com.bknote71.basicwebsocketgameserver.game.room.GameRoom;
 import com.bknote71.basicwebsocketgameserver.protocol.SMove;
+import com.bknote71.basicwebsocketgameserver.protocol.info.SkillInfo;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -17,6 +19,10 @@ public class Bullet extends GameObject {
     private GameObject owner;
     private Player target; // bullet 은 target 을 따라간다. 따라서 moveDir 가 필요 없다.
 
+    private SkillInfo skill;
+    private double speed;
+    private double range;
+
     public Bullet() {
         setType(GameObjectType.Bullet);
     }
@@ -24,10 +30,8 @@ public class Bullet extends GameObject {
     // 다음 움직일 틱 기간, 이 틱을 기준으로 update
     // 참고로 자바에서는 "1틱"이 거의 1ms라고 한다.
     long nextMoveTick = 0;
-    double range = 1;
     public void update() {
         GameRoom room = getGameRoom();
-        GameMap gameMap = null;
         int objectId = getId();
         if (owner == null || room == null || target == null)
             return;
@@ -37,8 +41,7 @@ public class Bullet extends GameObject {
             return;
 
         // next move tick 갱신
-        double bulletSpeed = 10; // 나중에 data 로 뺄 것
-        long tick = (long) (1000 / bulletSpeed); // tick(대기 시간) = 1초(도달 거리)/(속도s?)
+        long tick = (long) (1000 / speed); // tick(대기 시간) = 1초(도달 거리)/(속도s?)
         nextMoveTick = System.currentTimeMillis() + tick;
 
         // 다음 위치로 갈 수 있으면 이동한다.
@@ -65,10 +68,15 @@ public class Bullet extends GameObject {
             // 그러면 소멸한다는 의미다.
             // 소멸: 상대 피해 입히기 or 맵에서 나가기
             if (Vector2d.isIncludedInRange(dest, range, targetPos))
-                target.onDamaged(this, 100);
+                target.onDamaged(this, skill.getDamage());
 
             room.push(room::leaveGame, objectId);
         }
     }
 
+    public void setSkill(SkillInfo skill) {
+        this.skill = skill;
+        this.range = skill.getProjectile().getRange();
+        this.speed = skill.getProjectile().getSpeed();
+    }
 }

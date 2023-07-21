@@ -9,4 +9,6 @@ public class SkillInfo {
     private int damage;
     private SkillType skillType;
     private ProjectileInfo projectile;
+    // private double range;
+    // private double speed;
 }

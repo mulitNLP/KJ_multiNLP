@@ -1,5 +1,6 @@
 package com.bknote71.basicwebsocketgameserver.packet;
 
+import com.bknote71.basicwebsocketgameserver.data.DataManager;
 import com.bknote71.basicwebsocketgameserver.game.Vector2d;
 import com.bknote71.basicwebsocketgameserver.game.object.ObjectManager;
 import com.bknote71.basicwebsocketgameserver.game.room.GameRoom;
@@ -9,6 +10,7 @@ import com.bknote71.basicwebsocketgameserver.protocol.*;
 import com.bknote71.basicwebsocketgameserver.protocol.info.CreatureState;
 import com.bknote71.basicwebsocketgameserver.protocol.info.ObjectInfo;
 import com.bknote71.basicwebsocketgameserver.protocol.info.PositionInfo;
+import com.bknote71.basicwebsocketgameserver.protocol.info.StatInfo;
 import com.bknote71.basicwebsocketgameserver.session.ClientSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.WebSocketSession;
@@ -26,15 +28,18 @@ public class PacketHandler {
         Player player = ObjectManager.Instance.add(Player.class);
         ObjectInfo info = player.getInfo();
         PositionInfo posInfo = info.getPosInfo();
+
+        info.setName(enterPacket.getUsername());
         double x = ThreadLocalRandom.current().nextDouble(500, 1500);
         double y = ThreadLocalRandom.current().nextDouble(500, 1500);
         posInfo.setPos(new Vector2d(x, y));
-        // posInfo.setDir(MoveDir.North); // 이것도 나중에는 랜덤으로
         posInfo.setState(CreatureState.IDLE);
-        info.setName(enterPacket.getUsername());
-        info.setStatInfo(null); // 나중에 stat 도 지정해야함
-        player.setSession(clientSession);
 
+        // stat
+        StatInfo stat = DataManager.statInfoMap.get(0);
+        info.setStatInfo(stat); // 나중에 stat 도 지정해야함
+
+        player.setSession(clientSession);
         clientSession.setMyPlayer(player);
 
         // 방 찾기

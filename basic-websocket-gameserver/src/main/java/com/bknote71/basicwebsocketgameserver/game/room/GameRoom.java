@@ -1,5 +1,6 @@
 package com.bknote71.basicwebsocketgameserver.game.room;
 
+import com.bknote71.basicwebsocketgameserver.data.DataManager;
 import com.bknote71.basicwebsocketgameserver.job.JobSerializer;
 import com.bknote71.basicwebsocketgameserver.protocol.info.*;
 import com.bknote71.basicwebsocketgameserver.game.Vector2d;
@@ -80,9 +81,9 @@ public class GameRoom extends JobSerializer {
         if (gameObjectType == GameObjectType.Player) {
             Player player = (Player) gameObject;
             log.info("player({}) enter game", player.getId());
-
             size++;
             players.put(player.getPlayerId(), player);
+            player.init(gameMap.sizeX());
             player.setGameRoom(this);
 
             // room 과 세션 이어주기
@@ -250,7 +251,10 @@ public class GameRoom extends JobSerializer {
         broadcast(resSkillPacket);
 
         // 새로운 스킬용 객체 생성 ex) bullet, ...
-        SkillType skillType = skillPacket.getInfo().getSkillType();
+        SkillInfo skill = DataManager.skillInfoMap.get(skillPacket.getInfo().getSkillId());
+        if (skill == null)
+            return;
+        SkillType skillType = skill.getSkillType();
         switch (skillType) {
             case BULLET -> {
                 Bullet bullet = ObjectManager.Instance.add(Bullet.class);
@@ -262,6 +266,7 @@ public class GameRoom extends JobSerializer {
                 PositionInfo playerPosInfo = player.getPosInfo();
                 bulletPosInfo.setState(playerPosInfo.getState());
                 bulletPosInfo.setPos(playerPosInfo.getPos());
+                bullet.setSkill(skill);
                 bullet.setPosInfo(bulletPosInfo);
                 bullet.setOwner(player);
                 bullet.setTarget(ObjectManager.Instance.find(skillPacket.getTarget()));
