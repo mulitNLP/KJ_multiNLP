@@ -12,7 +12,6 @@ class Player extends ObjectClass {
     this.keycodes = {};
   }
 
-  
   // Returns a newly created bullet, or null.
   update(dt) {
     // 앞으로 나가는거

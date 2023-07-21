@@ -59,24 +59,6 @@ function render() {
 
 // 배경을 그리는 역할, 그라데이션
 function renderBackground(x, y) {
-  // const backgroundX = MAP_SIZE / 2 - x + canvas.width / 2;
-  // const backgroundY = MAP_SIZE / 2 - y + canvas.height / 2;
-
-  // // const backgroundX = MAP_SIZE;
-  // // const backgroundY = MAP_SIZE;
-
-  // const backgroundGradient = context.createRadialGradient(
-  //   backgroundX,
-  //   backgroundY,
-  //   MAP_SIZE / 10,
-  //   backgroundX,
-  //   backgroundY,
-  //   MAP_SIZE / 2,
-  // );
-  // backgroundGradient.addColorStop(0, 'gray');
-  // backgroundGradient.addColorStop(1, 'black');
-  // context.fillStyle = backgroundGradient;
-  // context.fillRect(0, 0, canvas.width, canvas.height);
 
   // Draw black background
   context.fillStyle = 'black';
