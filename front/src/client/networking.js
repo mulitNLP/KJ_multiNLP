@@ -168,7 +168,7 @@ export const handleChatAttack = (content, positive, percent) => {
     content: content,
   }
   // chat 
-  websocket.send(JSON.stringify(chatPacket));
+  // websocket.send(JSON.stringify(chatPacket));
 
   let info = positive === true ? bullletInstance : shieldInstance;
   const skillPacket = {
@@ -177,5 +177,7 @@ export const handleChatAttack = (content, positive, percent) => {
     info: info
   }
   // skill
-  websocket.send(JSON.stringify(skillPacket));
+  // websocket.send(JSON.stringify(skillPacket));
+
+  console.log(JSON.stringify(skillPacket));
 }
