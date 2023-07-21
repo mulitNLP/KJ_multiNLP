@@ -21,10 +21,9 @@ public class Vector2d {
         this.y = y;
     }
 
-    public static Vector2d createRandom() {
-        double mx = ThreadLocalRandom.current().nextDouble(0, 2000);
-        double my = ThreadLocalRandom.current().nextDouble(0, 2000);
-        System.out.println("x " + mx + " y " + my);
+    public static Vector2d createRandom(double origin, double bound) {
+        double mx = ThreadLocalRandom.current().nextDouble(origin, bound);
+        double my = ThreadLocalRandom.current().nextDouble(origin, bound);
         return new Vector2d(mx, my);
     }
 

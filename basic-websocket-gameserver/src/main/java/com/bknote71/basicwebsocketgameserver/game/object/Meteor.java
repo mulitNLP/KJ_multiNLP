@@ -15,8 +15,8 @@ public class Meteor extends GameObject {
     // meteor 전용 스텟
     // 메테오 전용 방향 단위 벡터. 따라서 moveDir 가 필요 없다.
     private Vector2d dirvec;
-    private double speed = 5;
-    private double range = 10;
+    private double speed = 20;
+    private double range = 50;
     private int damage = 1000;
 
     public Meteor() {
@@ -64,16 +64,12 @@ public class Meteor extends GameObject {
 
         // 만약 맵 끝에 도달한다면 소멸해야한다.
         if (!room.cango(dest)) {
-            System.out.println("맵의 끝에 도달했으므로 소멸");
+//            System.out.println("맵의 끝에 도달했으므로 소멸");
             room.push(room::leaveGame, getId());
             return;
         }
 
         pos(dest);
-//        SMove movePacket = new SMove();
-//        movePacket.setObjectId(getId());
-//        movePacket.setPosInfo(getPosInfo());
-//        room.broadcast(movePacket);
     }
 
     private void handleHit(List<Player> players) {
