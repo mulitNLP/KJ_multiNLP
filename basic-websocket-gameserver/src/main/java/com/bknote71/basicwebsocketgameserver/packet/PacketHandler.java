@@ -97,7 +97,12 @@ public class PacketHandler {
         GameRoom room = player.getGameRoom();
         if (room == null)
             return;
-        log.info("room push");
+
+        if (skillPacket.getTarget() == 0) {
+            log.info("none target");
+            return;
+        }
+
         room.push(room::handleSkill, player, skillPacket);
     }
 
