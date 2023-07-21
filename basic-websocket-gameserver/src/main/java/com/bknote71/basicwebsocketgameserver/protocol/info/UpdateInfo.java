@@ -8,13 +8,51 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class UpdateInfo {
 
     public long t;
-    public List<LeaderBoardInfo> leaderboard = new ArrayList<>();
-    public List<UpdatePosInfo> infos = new ArrayList<>();
+    public List<UpdatePos> others;
+    public List<BulletInfo> bullets;
+    public List<MeteorInfo> meteors;
+    public List<LeaderBoardInfo> leaderboard;
+
+    public UpdateInfo() {
+        t = System.currentTimeMillis();
+        others = new ArrayList<>();
+        bullets = new ArrayList<>();
+        meteors = new ArrayList<>();
+        leaderboard = new ArrayList<>();
+
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdatePos {
+        double direction;
+        int hp;
+        int id;
+        double x;
+        double y;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class BulletInfo {
+        int id;
+        double x;
+        double y;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MeteorInfo {
+        int id;
+        double x;
+        double y;
+    }
 
     @Data
     @NoArgsConstructor
@@ -23,16 +61,4 @@ public class UpdateInfo {
         String username;
         int score;
     }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UpdatePosInfo {
-        double direction;
-        int hp;
-        String id;
-        double x;
-        double y;
-    }
-
 }

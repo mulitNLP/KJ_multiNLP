@@ -23,19 +23,19 @@ class UpdateInfoTest {
 
 
 
-        UpdateInfo.UpdatePosInfo me = new UpdateInfo.UpdatePosInfo();
+        UpdateInfo.UpdatePos me = new UpdateInfo.UpdatePos();
         me.direction = 1.5;
         me.hp = 100;
-        me.id = "abcd";
+//        me.id = "abcd";
         me.x = 2000;
         me.y = 0;
 
-        List<UpdateInfo.UpdatePosInfo> os = new ArrayList<>();
+        List<UpdateInfo.UpdatePos> os = new ArrayList<>();
         for (int i = 0; i < 3; ++i) {
-            UpdateInfo.UpdatePosInfo tm = new UpdateInfo.UpdatePosInfo();
+            UpdateInfo.UpdatePos tm = new UpdateInfo.UpdatePos();
             me.direction = 1.6;
             me.hp = 100;
-            me.id = "abcde" + i;
+//            me.id = "abcde" + i;
             me.x = 2000;
             me.y = 0;
             os.add(tm);
@@ -54,7 +54,7 @@ class UpdateInfoTest {
         String json = mapper.writeValueAsString(updateInfo);
         System.out.println(json);
         SEnterGame sEnterGame = new SEnterGame();
-        sEnterGame.setUpdate(updateInfo);
+//        sEnterGame.setUpdate(updateInfo);
         String json2 = mapper.writeValueAsString(sEnterGame);
         System.out.println(json2);
     }
