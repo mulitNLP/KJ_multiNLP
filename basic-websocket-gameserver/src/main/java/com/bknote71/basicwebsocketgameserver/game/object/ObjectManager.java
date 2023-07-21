@@ -11,7 +11,7 @@ public class ObjectManager {
     public static ObjectManager Instance = new ObjectManager();
 
     private Object lock = new Object();
-    private Map<Integer, Player> players = new HashMap<>();
+    private Map<Integer, GameObject> objects = new HashMap<>();
 
     // [UNUSED(1)][TYPE(7)][ID(24)] << 나중에
     private int id;
@@ -32,8 +32,8 @@ public class ObjectManager {
                 int objectId = generateId(gameObject.getType());
                 gameObject.setId(objectId);
 
-                if (gameObject.getType() == GameObjectType.Player)
-                    players.put(objectId, (Player) gameObject);
+                if (gameObject.getType() == GameObjectType.Player || gameObject.getType() == GameObjectType.Meteor)
+                    objects.put(objectId, gameObject);
 
                 return gameObject;
             }
@@ -49,12 +49,12 @@ public class ObjectManager {
 
     }
 
-    public Player find(int objectId) {
+    public GameObject find(int objectId) {
         GameObjectType type = getObjectTypeById(objectId);
 
         synchronized (lock) {
-            if (type == GameObjectType.Player)
-                return players.get(objectId);
+            if (type == GameObjectType.Player || type == GameObjectType.Meteor)
+                return objects.get(objectId);
         }
         return null;
     }
@@ -64,7 +64,7 @@ public class ObjectManager {
 
         synchronized (lock) {
             if (type == GameObjectType.Player)
-                players.remove(objectId);
+                objects.remove(objectId);
         }
     }
 }

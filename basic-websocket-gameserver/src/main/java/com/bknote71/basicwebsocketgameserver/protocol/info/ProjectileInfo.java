@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class ProjectileInfo {
-    private float speed;
+    private double speed;
     private double range;
 }
