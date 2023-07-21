@@ -1,6 +1,6 @@
 // Learn more about this file at:
 // https://victorzhou.com/blog/build-an-io-game-part-1/#3-client-entrypoints
-import { connect, play } from './networking';
+import { connect, play, handleChatAttack } from './networking';
 import { startRendering, stopRendering } from './render';
 import { startCapturingInput, stopCapturingInput } from './input';
 import { downloadAssets } from './assets';
@@ -46,7 +46,7 @@ function onGameOver() {
 export const enterKeyBoard = throttle (10, ()=> {
   if (document.activeElement === enterInputBar){
     // 이미 포커스가 있어
-    console.log(enterInputBar.value);
+    handleChatAttack(enterInputBar.value, true, 0);
     enterInputBar.value="";
     enterInputBar.blur();
   }else{
