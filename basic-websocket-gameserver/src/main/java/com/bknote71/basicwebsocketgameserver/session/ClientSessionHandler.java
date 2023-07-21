@@ -59,6 +59,9 @@ public class ClientSessionHandler extends TextWebSocketHandler {
 
         gameRoom.push(gameRoom::leaveGame, player.getPlayerId());
         ClientSessionManager.Instance.remove(clientSession);
+
+        // 만약에 룸에 사람이 없다면 해당 룸은 잠깐 쉬어야 합니다.
+        // gameRoom.push(gameRoom::release);
     }
 
 }

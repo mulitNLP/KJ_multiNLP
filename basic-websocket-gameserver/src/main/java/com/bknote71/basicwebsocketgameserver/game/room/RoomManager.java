@@ -75,4 +75,11 @@ public class RoomManager {
         }
     }
 
+    public void removePlayerAtRoom(GameRoom room) {
+        if (pq.remove(room))
+            return;
+
+        room.sizeDecrement();
+        pq.offer(room);
+    }
 }

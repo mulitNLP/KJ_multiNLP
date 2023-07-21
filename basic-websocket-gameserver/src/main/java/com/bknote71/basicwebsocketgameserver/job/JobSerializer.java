@@ -34,7 +34,7 @@ public class JobSerializer { // 잡 큐
     public <T1, T2, T3> void push(TriConsumer<T1, T2, T3> action, T1 t1, T2 t2, T3 t3) { push(new TriJob(action, t1, t2, t3));}
 
     // 잡 큐에 푸쉬
-    public void push(IJob job) {
+    private void push(IJob job) {
         synchronized (lock) {
             jobQueue.offer(job);
         }
