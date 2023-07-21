@@ -15,6 +15,7 @@ public class Meteor extends GameObject {
     // meteor 전용 스텟
     // 메테오 전용 방향 단위 벡터. 따라서 moveDir 가 필요 없다.
     private Vector2d dirvec;
+    // private double speed = 20;
     private double speed = 20;
     private double range = 50;
     private int damage = 1000;

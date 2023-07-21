@@ -67,10 +67,13 @@ function onMouseInput(e) {
   clickPlayer(gameX, gameY);
 }
 
+export let targetId = -1;
+
 function clickPlayer(x, y) {
 
   const players = getCurrentState().others;
   const meteors = getCurrentState().meteors;
+
   // 클릭된 위치가 플레이어의 영역 내에 있는지 확인합니다.
   for (const player of players) {
     const distance = Math.hypot(player.x - (x), player.y - (y));
@@ -78,6 +81,7 @@ function clickPlayer(x, y) {
     // 이 플레이어를 락온하고 루프를 종료합니다.
     if (distance < PLAYER_RADIUS) {
       console.log("hi");
+      targetId = player.id;
       return;
     }
   }
@@ -88,6 +92,7 @@ function clickPlayer(x, y) {
     // 이 플레이어를 락온하고 루프를 종료합니다.
     if (distance < PLAYER_RADIUS) {
       console.log("hi");
+      targetId = meteor.id;
       return;
     }
   }
