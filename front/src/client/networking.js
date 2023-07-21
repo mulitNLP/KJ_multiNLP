@@ -160,7 +160,7 @@ const shieldInstance = {
   skillType: 'SHIELD',
 };
 
-export const handleChatAttack = (content, positive, percent) => {
+export const handleChatAttack = (targetId, content, positive, percent) => {
   console.log(`${content}, ${positive}, ${percent}`);
   const chatPacket = {
     type: 'cchat',
@@ -174,6 +174,7 @@ export const handleChatAttack = (content, positive, percent) => {
   const skillPacket = {
     type: 'cskiill',
     protocol: 'C_Skill',
+    target: targetId,
     info: info
   }
   // skill
