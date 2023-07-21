@@ -48,6 +48,7 @@ export const enterKeyBoard = throttle (10, ()=> {
     // 이미 포커스가 있어
     console.log(enterInputBar.value);
     enterInputBar.value="";
+    enterInputBar.blur();
   }else{
     // 포커스가 없으니까 포커스 잡아줌
     enterInputBar.focus();
