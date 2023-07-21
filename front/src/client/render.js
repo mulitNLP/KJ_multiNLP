@@ -48,7 +48,8 @@ function render() {
 
     // 모든 총알 그리기
     // bullets.forEach(renderBullet.bind(null, me));
-    meteors.forEach(renderMeteor.bind(null,me))
+    meteors.forEach(renderMeteor.bind(null, me));
+
     // 모든 플레이어 그리기
     renderPlayer(me, me);
     others.forEach(renderPlayer.bind(null, me));

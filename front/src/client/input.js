@@ -61,30 +61,32 @@ function onMouseInput(e) {
   const me = getCurrentState().me;
 
   // Convert the canvas coordinates to game world coordinates
-  const gameX = (x / canvas.width) * MAP_SIZE + me.x - MAP_SIZE / 2;
-  const gameY = (y / canvas.height) * MAP_SIZE + me.y - MAP_SIZE / 2;
+  const gameX = me.x + (x - canvas.width / 2);
+  const gameY = me.y + (y - canvas.height / 2);
 
   clickPlayer(gameX, gameY);
 }
 
 function clickPlayer(x, y) {
 
-  console.log(x, y);
-  // 플레이어의 목록을 가져옵니다. 이는 게임의 상태나 다른 곳에서 가져와야 합니다.
   const players = getCurrentState().others;
-  console.log(getCurrentState());
-  // console.log(players);
-  // console.log(me);
+  const meteors = getCurrentState().meteors;
   // 클릭된 위치가 플레이어의 영역 내에 있는지 확인합니다.
   for (const player of players) {
     const distance = Math.hypot(player.x - (x), player.y - (y));
-    console.log(player.x);
-    console.log(player.y);
-    // console.log(distance);
     // 클릭한 위치가 플레이어의 반경 내에 있다면,
     // 이 플레이어를 락온하고 루프를 종료합니다.
     if (distance < PLAYER_RADIUS) {
-      // lockedPlayerId = player.id;
+      console.log("hi");
+      return;
+    }
+  }
+
+  for (const meteor of meteors) {
+    const distance = Math.hypot(meteor.x - (x), meteor.y - (y));
+    // 클릭한 위치가 플레이어의 반경 내에 있다면,
+    // 이 플레이어를 락온하고 루프를 종료합니다.
+    if (distance < PLAYER_RADIUS) {
       console.log("hi");
       return;
     }
