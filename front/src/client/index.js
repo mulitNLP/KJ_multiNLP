@@ -6,6 +6,7 @@ import { startCapturingInput, stopCapturingInput } from './input';
 import { downloadAssets } from './assets';
 import { initState } from './state';
 import { setLeaderboardHidden } from './leaderboard';
+import { throttle } from 'throttle-debounce';
 
 // I'm using a tiny subset of Bootstrap here for convenience - there's some wasted CSS,
 // but not much. In general, you should be careful using Bootstrap because it makes it
@@ -16,6 +17,7 @@ import './css/main.css';
 const playMenu = document.getElementById('play-menu');
 const playButton = document.getElementById('play-button');
 const usernameInput = document.getElementById('username-input');
+const enterInputBar = document.getElementById('inputbar');
 
 Promise.all([
   connect(onGameOver),
@@ -41,3 +43,13 @@ function onGameOver() {
   setLeaderboardHidden(true);
 }
 
+export const enterKeyBoard = throttle (10, ()=> {
+  if (document.activeElement === enterInputBar){
+    // 이미 포커스가 있어
+    console.log(enterInputBar.value);
+    enterInputBar.value="";
+  }else{
+    // 포커스가 없으니까 포커스 잡아줌
+    enterInputBar.focus();
+}
+});
