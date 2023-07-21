@@ -25,6 +25,10 @@ public class GameRoom extends JobSerializer {
         ++size;
     }
 
+    public void sizeDecrement() {
+        --size;
+    }
+
     // GameMap 필요가 있을까? 단순하게 크기만 나타내면 될텐데 ...
     @Getter
     private GameMap gameMap;
@@ -38,6 +42,20 @@ public class GameRoom extends JobSerializer {
     public GameRoom(int id) {
         this.roomId = id;
         this.gameMap = new GameMap(0, 2000, 0, 2000);
+        this.updateRoomTask = new TimerTask() {
+            @Override
+            public void run() {
+                update();
+            }
+        };
+        this.createMeteorTask = new TimerTask() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 10; ++i)
+                    createMeteor();
+            }
+        };
+
     }
 
     private TimerTask updateRoomTask;
@@ -46,25 +64,18 @@ public class GameRoom extends JobSerializer {
     public void register() {
         // tick room
         Timer updateRoomTimer = new Timer();
-        this.updateRoomTask = new TimerTask() {
-            @Override
-            public void run() {
-                update();
-            }
-        };
         updateRoomTimer.schedule(updateRoomTask, 0, 1000 / 60); // delay, interval
         RoomManager.Instance.registerTimerTask(updateRoomTimer);
 
         Timer createMeteorTimer = new Timer();
-        createMeteorTask = new TimerTask() {
-            @Override
-            public void run() {
-                for (int i = 0; i < 10; ++i)
-                    createMeteor();
-            }
-        };
         createMeteorTimer.schedule(createMeteorTask, 1000, 3000);
         RoomManager.Instance.registerTimerTask(createMeteorTimer);
+    }
+
+    public void release() {
+        log.info("room release");
+        updateRoomTask.cancel();
+        createMeteorTask.cancel();
     }
 
     public void update() {
@@ -172,6 +183,10 @@ public class GameRoom extends JobSerializer {
             Player player;
             if ((player = players.remove(objectId)) == null)
                 return;
+            // room 크기 줄이기
+            RoomManager.Instance.removePlayerAtRoom(this);
+            if (size == 0)
+                release();
 
             // room null
             player.setGameRoom(null);
@@ -196,9 +211,9 @@ public class GameRoom extends JobSerializer {
         }
 
         // 타인한테 정보 전송: Despawn 되었다는 사실
-        SDespawn despawnPacket = new SDespawn();
-        despawnPacket.add(objectId);
-        broadcast(despawnPacket);
+//        SDespawn despawnPacket = new SDespawn();
+//        despawnPacket.add(objectId);
+//        broadcast(despawnPacket);
     }
 
     public void handleChat(Player player, CChat chatPacket) {
