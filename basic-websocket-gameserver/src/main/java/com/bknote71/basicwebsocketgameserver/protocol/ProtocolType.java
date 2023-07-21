@@ -1,6 +1,7 @@
 package com.bknote71.basicwebsocketgameserver.protocol;
 
 public enum ProtocolType {
+    C_EnterGame,
     S_EnterGame,
     S_LeaveGame,
     C_Chat,
@@ -12,5 +13,6 @@ public enum ProtocolType {
     C_Skill,
     S_Skill,
     S_ChangeHP,
-    S_Die
+    S_Die,
+    S_Update,
 }

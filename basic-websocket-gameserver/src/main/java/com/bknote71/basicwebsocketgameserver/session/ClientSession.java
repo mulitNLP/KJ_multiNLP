@@ -28,7 +28,8 @@ public class ClientSession {
         try {
             // packet to json
             String json = PacketTranslator.json(packet);
-            webSocketSession.sendMessage(new TextMessage(json));
+            if (webSocketSession.isOpen())
+                webSocketSession.sendMessage(new TextMessage(json));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -1,20 +1,15 @@
 package com.bknote71.basicwebsocketgameserver.game.room;
 
 import com.bknote71.basicwebsocketgameserver.job.JobSerializer;
-import com.bknote71.basicwebsocketgameserver.protocol.info.GameObjectType;
-import com.bknote71.basicwebsocketgameserver.protocol.info.ObjectInfo;
-import com.bknote71.basicwebsocketgameserver.protocol.info.PositionInfo;
+import com.bknote71.basicwebsocketgameserver.protocol.info.*;
 import com.bknote71.basicwebsocketgameserver.game.Vector2d;
 import com.bknote71.basicwebsocketgameserver.game.object.*;
 import com.bknote71.basicwebsocketgameserver.protocol.*;
-import com.bknote71.basicwebsocketgameserver.protocol.info.SkillType;
 import com.bknote71.basicwebsocketgameserver.session.ClientSession;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 
 @Slf4j
@@ -41,7 +36,7 @@ public class GameRoom extends JobSerializer {
 
     public GameRoom(int id) {
         this.roomId = id;
-        this.gameMap = new GameMap(-10000, 10000, -10000, 10000);
+        this.gameMap = new GameMap(0, 2000, 0, 2000);
     }
 
     public void update() {
@@ -55,6 +50,23 @@ public class GameRoom extends JobSerializer {
         }
 
         flush();
+
+        // update packet 보내기
+        SUpdate updatePacket = new SUpdate();
+        UpdateInfo updateInfo = new UpdateInfo();
+        updateInfo.leaderboard = new ArrayList<>();
+        updateInfo.t = System.currentTimeMillis();
+        // players 에 대한 정보 모으기
+        players.values().stream()
+                .forEach(player -> {
+                            player.update();
+                            updateInfo.infos.add(
+                                    new UpdateInfo.UpdatePosInfo(player.getDirection(), player.hp(), player.getInfo().getName(), player.pos().x, player.pos().y)
+                            );
+                        }
+                );
+        updatePacket.update = updateInfo;
+        broadcast(updatePacket);
     }
 
     public void enterGame(GameObject gameObject) { // 플레이어의 위치는 랜덤으로 생성한다.
@@ -79,9 +91,10 @@ public class GameRoom extends JobSerializer {
             // SEnterGame: "내가" 게임룸에 입장함을 알림
             SEnterGame enterPacket = new SEnterGame();
             enterPacket.setPlayer(player.getInfo());
+            enterPacket.update(); // tmp code
             session.send(enterPacket);
 
-            // SSpwan: 주변 플레이어들 정보 넘김 (나 제외)
+            // SSpwan: 나에게 주변 플레이어들 정보 넘김 (나 제외)
             SSpawn spawnPacket = new SSpawn();
             for (Player p : players.values()) {
                 if (p != player)
@@ -170,35 +183,52 @@ public class GameRoom extends JobSerializer {
             return;
         }
 
-        Vector2d pos = movePacket.getPosInfo().getPos();
-        log.info("handle move player({}), where? ({}, {}) to ({}, {})", player.getPlayerId(), player.pos().x, player.pos().y, pos.x, pos.y);
+        // dirs 와 updown 만 업데이트
+        Boolean updown = movePacket.getUpdown();
+        MoveDir dir = movePacket.getDir();
 
-        // TODO: 검증
+        if (updown)
+            player.addDir(dir);
+        else
+            player.removeDir(dir);
+
+        /*
         PositionInfo moveposInfo = movePacket.getPosInfo();
-        Vector2d movepos = moveposInfo.getPos();
-
         ObjectInfo info = player.getInfo();
         PositionInfo playerPosInfo = info.getPosInfo();
         Vector2d curpos = playerPosInfo.getPos();
 
-        // 다른 좌표로 이동할 경우, 갈 수 있는지 체크
-        if (movepos.x != curpos.x || movepos.y != curpos.y) {
-            if (!cango(new Vector2d(movepos.x, movepos.y)))
-                return;
+        // player 의 현재 좌표 갱신: player.js 와 동일하게.
+        curpos.x = Math.max(0, Math.min(gameMap.sizeX(), curpos.x));
+        curpos.y = Math.max(0, Math.min(gameMap.sizeY(), curpos.y));
+
+        double speed = 200;
+        Set<MoveDir> dirs = moveposInfo.getDirs();
+        if (dirs.contains(MoveDir.North)) {
+            player.setDirection(Math.atan2(0, curpos.y - speed)); // 200 이 나중에는 player.speed()
+            curpos.y -= speed / 40;
+        }
+        if (dirs.contains(MoveDir.South)) {
+            player.setDirection(Math.atan2(0, curpos.y + speed - gameMap.sizeY())); // 200 이 나중에는 player.speed()
+            curpos.y += speed / 40;
+        }
+        if (dirs.contains(MoveDir.East)) {
+            player.setDirection(Math.atan2(curpos.x + speed, 0)); // 200 이 나중에는 player.speed()
+            curpos.x += speed / 40;
+        }
+        if (dirs.contains(MoveDir.West)) {
+            player.setDirection(Math.atan2(curpos.x - speed - gameMap.sizeX(), 0)); // 200 이 나중에는 player.speed()
+            curpos.x -= speed / 40;
         }
 
-        log.info("can move");
-
-        // player 의 현재 좌표 갱신
-        playerPosInfo.setPos(movepos);
         playerPosInfo.setState(moveposInfo.getState());
-        playerPosInfo.setDir(moveposInfo.getDir());
 
         // 다른 플레이어게 알림
         SMove resMovePacket = new SMove();
         resMovePacket.setObjectId(player.getPlayerId());
         resMovePacket.setPosInfo(movePacket.getPosInfo());
         broadcast(resMovePacket);
+         */
     }
 
     public void handleSkill(Player player, CSkill skillPacket) {
