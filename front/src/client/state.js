@@ -77,7 +77,6 @@ export function getCurrentState() {
       me: interpolateObject(baseUpdate.me, next.me, ratio),
       others: interpolateObjectArray(baseUpdate.others, next.others, ratio),
       bullets: interpolateObjectArray(baseUpdate.bullets, next.bullets, ratio),
-      meteors:interpolateObjectArray(baseUpdate.meteors, next.meteors, ratio),
     };
   }
 }
@@ -92,10 +91,8 @@ function interpolateObject(object1, object2, ratio) {
   Object.keys(object1).forEach(key => {
     if (key === 'direction') {
       interpolated[key] = interpolateDirection(object1[key], object2[key], ratio);
-    } else if (key === 'x' || key === 'y' || key === 'hp'){
-      interpolated[key] = object1[key] + (object2[key] - object1[key]) * ratio;
     } else {
-      interpolated[key] = object1[key];
+      interpolated[key] = object1[key] + (object2[key] - object1[key]) * ratio;
     }
   });
   return interpolated;

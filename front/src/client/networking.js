@@ -3,6 +3,7 @@
 // import io from 'socket.io-client';
 import { throttle } from 'throttle-debounce';
 import { processGameUpdate } from './state';
+import constants from '../shared/constants';
 
 // websocket connection
 const roomId = 1;
@@ -17,7 +18,7 @@ const wsconnectedPromise = new Promise(resolve => {
   });
 });
 
-let myId;
+let playerId;
 
 // connect 이후 콜백 등록
 export const connect = onGameOver => (
@@ -30,46 +31,28 @@ export const connect = onGameOver => (
       const message = JSON.parse(event.data);
 
       if (message.type === 'sentergame') {
-        // console.log('enter game!!');
-        // console.log(message.update);
-        myId = message.player.name;
-        const update = {
-          me: message.update.infos[0],
-          leaderboard: [],
-          t: message.update.t,
-        };
-        processGameUpdate(update);
+        playerId = message.player.objectId;
+        console.log(`enter game!! ${playerId}`);
+
       } else if (message.type === 'sspawn') {
-        // console.log('spawn!!');
-        // processGameUpdate(message);
+        console.log('spawn!!');
+
       } else if (message.type === 'supdate') { // update (움직임 패킷)
         // 플레이어 update
         // me 와 others 구분
-        let me;
-        const others = [];
+        const meItem = message.update.others.find((item) => { return item['id'] === playerId });
+        const idx = message.update.others.indexOf(meItem);
 
-        for (let item of message.update.infos) {
-          // console.log(item);
-          // console.log(myId);
-          if (item['id'] === myId) {
-            me = item;
-          }
-          else {
-            others.push(item);
-          }
-        }
+        if (idx > -1) message.update.others.splice(idx, 1);
 
         const update = {
-          meteors: [],
-          bullets: [],
-          leaderboard: [],
           t: message.update.t,
-          me: me,
-          others: others,
+          me: meItem,
+          others: message.update.others,
+          bullets: message.update.bullets,
+          meteors: message.update.meteors,
+          leaderboard: message.update.leaderboard,
         };
-
-        // console.log('update!');
-        // console.log(update);
 
         processGameUpdate(update);
 
@@ -106,7 +89,7 @@ export const play = name => {
 };
 
 export const updateInputKeyBoardDown = throttle(20, (key) => {
-  var dir;
+  let dir;
   if (key === 87) {
     dir = 'North';
   } else if (key === 83) {
@@ -129,12 +112,11 @@ export const updateInputKeyBoardDown = throttle(20, (key) => {
     updown: true,
   };
 
-  console.log(`message: ${JSON.stringify(message)}`);
   websocket.send(JSON.stringify(message));
 });
 
 export const updateInputKeyBoardUp = (key) => {
-  var dir;
+  let dir;
   if (key === 87) {
     dir = 'North';
   } else if (key === 83) {
@@ -157,6 +139,43 @@ export const updateInputKeyBoardUp = (key) => {
     updown: false,
   };
 
-  console.log(`message: ${JSON.stringify(message)}`);
   websocket.send(JSON.stringify(message));
 };
+
+const bullletInstance = {
+  skillId: 1,
+  skillName: 'bullet',
+  skillDamage: constants.BULLET_DAMAGE,
+  skillType: 'BULLET',
+  projectile: {
+    speed: constants.BULLET_SPEED,
+    range: constants.BULLET_RADIUS,
+  }
+};
+
+const shieldInstance = {
+  skillId: 2,
+  skillName: 'shield',
+  skillDamage: 0,
+  skillType: 'SHIELD',
+};
+
+export const handleChatAttack = (content, positive, percent) => {
+  console.log(`${content}, ${positive}, ${percent}`);
+  const chatPacket = {
+    type: 'cchat',
+    protocol: 'C_Chat',
+    content: content,
+  }
+  // chat 
+  websocket.send(JSON.stringify(chatPacket));
+
+  let info = positive === true ? bullletInstance : shieldInstance;
+  const skillPacket = {
+    type: 'cskiill',
+    protocol: 'C_Skill',
+    info: info
+  }
+  // skill
+  websocket.send(JSON.stringify(skillPacket));
+}

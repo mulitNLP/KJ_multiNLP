@@ -6,8 +6,7 @@ import { getCurrentState } from './state';
 
 import renderBackground from './render/background';
 import renderPlayer from './render/player';
-import renderLine from './render/Line';
-import renderMeteor from './render/meteor';
+import renderLine from './render/line';
 
 const Constants = require('../shared/constants');
 
@@ -37,7 +36,7 @@ let animationFrameRequestId;
 
 // 게임의 현재 상태를 그리는 함수
 function render() {
-  const { me, others, bullets,meteors } = getCurrentState();
+  const { me, others, bullets } = getCurrentState();
   if (me) {
 
     // 배경 그리기
@@ -48,7 +47,7 @@ function render() {
 
     // 모든 총알 그리기
     // bullets.forEach(renderBullet.bind(null, me));
-    meteors.forEach(renderMeteor.bind(null,me))
+
     // 모든 플레이어 그리기
     renderPlayer(me, me);
     others.forEach(renderPlayer.bind(null, me));
