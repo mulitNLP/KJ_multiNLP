@@ -37,7 +37,7 @@ let animationFrameRequestId;
 
 // 게임의 현재 상태를 그리는 함수
 function render() {
-  const { me, others, bullets } = getCurrentState();
+  const { me, others, meteors } = getCurrentState();
   if (me) {
 
     // 배경 그리기
