@@ -26,7 +26,7 @@ public class HomeController {
 
         // timer task 등록 (-> 주기마다 실행해야 하는 timer task 등록)
         if (room.getSize() == 1)
-            RoomManager.Instance.tickRoom(room, 50);
+            room.register();
 
         return room.getRoomId();
     }

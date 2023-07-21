@@ -21,6 +21,6 @@ public class BasicWebsocketGameserverApplication {
 
 		// 무조건 처음 룸 생성하도록 할까?
 		GameRoom room = RoomManager.Instance.poll();
-		RoomManager.Instance.tickRoom(room, 1000 / 60);
+		room.register();
 	}
 }

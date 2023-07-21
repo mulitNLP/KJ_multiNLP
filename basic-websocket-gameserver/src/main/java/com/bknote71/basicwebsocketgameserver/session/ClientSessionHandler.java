@@ -49,14 +49,15 @@ public class ClientSessionHandler extends TextWebSocketHandler {
         log.info("connection closed status {} and closed={}", status, !session.isOpen());
         // leave room
         ClientSession clientSession = ClientSessionManager.Instance.find(session.getId());
-        GameRoom gameRoom = clientSession.getMyPlayer().getGameRoom();
-        if (gameRoom == null)
-            return;
-        Player sessionPlayer = clientSession.getMyPlayer();
-        if (sessionPlayer == null)
+        Player player = clientSession.getMyPlayer();
+        if (player == null)
             return;
 
-        gameRoom.push(gameRoom::leaveGame, sessionPlayer.getPlayerId());
+        GameRoom gameRoom = player.getGameRoom();
+        if (gameRoom == null)
+            return;
+
+        gameRoom.push(gameRoom::leaveGame, player.getPlayerId());
         ClientSessionManager.Instance.remove(clientSession);
     }
 
