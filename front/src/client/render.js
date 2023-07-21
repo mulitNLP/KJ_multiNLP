@@ -4,9 +4,13 @@ import { debounce } from 'throttle-debounce';
 import { getAsset } from './assets';
 import { getCurrentState } from './state';
 
+import renderBackground from './render/background';
+import renderPlayer from './render/player';
+import renderLine from './render/line';
+
 const Constants = require('../shared/constants');
 
-const { PLAYER_RADIUS, PLAYER_MAX_HP, BULLET_RADIUS, MAP_SIZE } = Constants;
+const { PLAYER_RADIUS, BULLET_RADIUS, MAP_SIZE } = Constants;
 
 // Get the canvas graphics context
 const canvas = document.getElementById('game-canvas');
@@ -23,7 +27,6 @@ function setCanvasDimensions() {
 
   canvas.width = 1200;
   canvas.height = 800;
-
 }
 
 // 화면 크기가 변경될 때 캔버스 크기를 업데이트
@@ -40,12 +43,10 @@ function render() {
     renderBackground(me.x, me.y);
 
     // 경계선 그리기
-    context.strokeStyle = 'white';
-    context.lineWidth = 5;
-    context.strokeRect(canvas.width / 2 - me.x, canvas.height / 2 - me.y, MAP_SIZE, MAP_SIZE);
+    renderLine(me);
 
     // 모든 총알 그리기
-    bullets.forEach(renderBullet.bind(null, me));
+    // bullets.forEach(renderBullet.bind(null, me));
 
     // 모든 플레이어 그리기
     renderPlayer(me, me);
@@ -56,111 +57,17 @@ function render() {
   animationFrameRequestId = requestAnimationFrame(render);
 }
 
-
-// 배경을 그리는 역할, 그라데이션
-function renderBackground(x, y) {
-  // const backgroundX = MAP_SIZE / 2 - x + canvas.width / 2;
-  // const backgroundY = MAP_SIZE / 2 - y + canvas.height / 2;
-
-  // // const backgroundX = MAP_SIZE;
-  // // const backgroundY = MAP_SIZE;
-
-  // const backgroundGradient = context.createRadialGradient(
-  //   backgroundX,
-  //   backgroundY,
-  //   MAP_SIZE / 10,
-  //   backgroundX,
-  //   backgroundY,
-  //   MAP_SIZE / 2,
-  // );
-  // backgroundGradient.addColorStop(0, 'gray');
-  // backgroundGradient.addColorStop(1, 'black');
-  // context.fillStyle = backgroundGradient;
-  // context.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Draw black background
-  context.fillStyle = 'black';
-  context.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Draw grid
-  const gridSize = 50; // Define the size of the grid here
-  context.strokeStyle = 'white';
-  context.lineWidth = 0.5;
-
-  // Calculate the boundary in canvas coordinates
-  const boundaryX = canvas.width / 2 - x;
-  const boundaryY = canvas.height / 2 - y;
-
-  // Draw vertical lines
-  for (let i = 0; i < MAP_SIZE; i += gridSize) {
-    const canvasX = canvas.width / 2 + i - x;
-    if (canvasX >= boundaryX && canvasX <= boundaryX + MAP_SIZE) {
-      context.beginPath();
-      context.moveTo(canvasX, boundaryY);
-      context.lineTo(canvasX, boundaryY + MAP_SIZE);
-      context.stroke();
-    }
-  }
-
-  // Draw horizontal lines
-  for (let i = 0; i < MAP_SIZE; i += gridSize) {
-    const canvasY = canvas.height / 2 + i - y;
-    if (canvasY >= boundaryY && canvasY <= boundaryY + MAP_SIZE) {
-      context.beginPath();
-      context.moveTo(boundaryX, canvasY);
-      context.lineTo(boundaryX + MAP_SIZE, canvasY);
-      context.stroke();
-    }
-  }
-}
-
-// 주어진 좌표에서 배를 그리는 함수
-function renderPlayer(me, player) {
-  const { x, y, direction } = player;
-  const canvasX = canvas.width / 2 + x - me.x;
-  const canvasY = canvas.height / 2 + y - me.y;
-
-  // 배 그리기
-  context.save();
-  context.translate(canvasX, canvasY);
-  context.rotate(direction);
-  context.drawImage(
-    getAsset('circle.png'),
-    -PLAYER_RADIUS,
-    -PLAYER_RADIUS,
-    PLAYER_RADIUS * 2,
-    PLAYER_RADIUS * 2,
-  );
-  context.restore();
-
-  // // 체력 바 그리기
-  // context.fillStyle = 'white';
-  // context.fillRect(
-  //   canvasX - PLAYER_RADIUS,
-  //   canvasY + PLAYER_RADIUS + 8,
-  //   PLAYER_RADIUS * 2,
-  //   2,
-  // );
-  // context.fillStyle = 'red';
-  // context.fillRect(
-  //   canvasX - PLAYER_RADIUS + PLAYER_RADIUS * 2 * player.hp / PLAYER_MAX_HP,
-  //   canvasY + PLAYER_RADIUS + 8,
-  //   PLAYER_RADIUS * 2 * (1 - player.hp / PLAYER_MAX_HP),
-  //   2,
-  // );
-}
-
-// 총알을 그리는 함수
-function renderBullet(me, bullet) {
-  const { x, y } = bullet;
-  context.drawImage(
-    getAsset('bullet.svg'),
-    canvas.width / 2 + x - me.x - BULLET_RADIUS,
-    canvas.height / 2 + y - me.y - BULLET_RADIUS,
-    BULLET_RADIUS * 2,
-    BULLET_RADIUS * 2,
-  );
-}
+// // 총알을 그리는 함수
+// function renderBullet(me, bullet) {
+//   const { x, y } = bullet;
+//   context.drawImage(
+//     getAsset('bullet.svg'),
+//     canvas.width / 2 + x - me.x - BULLET_RADIUS,
+//     canvas.height / 2 + y - me.y - BULLET_RADIUS,
+//     BULLET_RADIUS * 2,
+//     BULLET_RADIUS * 2,
+//   );
+// }
 
 // 메인 메뉴를 그리는 함수
 function renderMainMenu() {
