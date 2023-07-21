@@ -69,8 +69,9 @@ public class GameObject { // player, bullet, meteor
         if (gameRoom == null)
             return;
 
+        System.out.println("before hp? " + hp());
         info.getStatInfo().setHp(Math.max(hp() - damage, 0));
-
+        System.out.println("after hp? " + hp());
         SChangeHp changePacket = new SChangeHp();
         changePacket.setObjectId(getId());
         changePacket.setHp(hp());
@@ -81,6 +82,7 @@ public class GameObject { // player, bullet, meteor
     }
 
     public void onDead(GameObject attacker) {
+        System.out.println("on dead. " + getId());
         if (gameRoom == null)
             return;
 

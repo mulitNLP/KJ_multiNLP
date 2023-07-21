@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 public class Bullet extends GameObject {
 
     private GameObject owner;
-    private Player target; // bullet 은 target 을 따라간다. 따라서 moveDir 가 필요 없다.
+    private GameObject target; // bullet 은 target 을 따라간다. 따라서 moveDir 가 필요 없다.
 
     private SkillInfo skill;
     private double speed;
@@ -43,16 +43,16 @@ public class Bullet extends GameObject {
         // next move tick 갱신
         long tick = (long) (1000 / speed); // tick(대기 시간) = 1초(도달 거리)/(속도s?)
         nextMoveTick = System.currentTimeMillis() + tick;
-
+        // System.out.println("speed, range: " + speed + " " + range);
         // 다음 위치로 갈 수 있으면 이동한다.
         Vector2d targetPos = target.pos();
         Vector2d dir = Vector2d.unitVector(targetPos, pos());
-        Vector2d dest = Vector2d.dest(pos(), dir, 1);
+        Vector2d dest = Vector2d.dest(pos(), dir, speed);
 
         // log
-        log.info("target pos ({}, {})", targetPos.x, targetPos.y);
-        log.info("방향 단위 벡터: ({}, {})", dir.x, dir.y);
-        log.info("bullet 이동 위치 ({}, {})", dest.x, dest.y);
+        // log.info("target type: {}, target pos ({}, {})", target.getType(), targetPos.x, targetPos.y);
+        // log.info("방향 단위 벡터: ({}, {})", dir.x, dir.y);
+        // log.info("bullet 이동 위치 ({}, {})", dest.x, dest.y);
 
         // 갈 수 있는 조건: dest, range 안에 target 플레이어가 없어야 한다. + 맵 밖이 아니여야 한다.
         if (room.cango(dest) && !Vector2d.isIncludedInRange(dest, range, targetPos)) {
