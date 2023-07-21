@@ -16,22 +16,21 @@ public class GameObject { // player, bullet, meteor
     private GameObjectType type;
     private ObjectInfo info;
     private PositionInfo posInfo;
-    private StatInfo statInfo;
 
     public GameObject() {
         this.info = new ObjectInfo();
 
         this.posInfo = new PositionInfo();
-        this.statInfo = new StatInfo();
+        info.setStatInfo(new StatInfo());
 
         info.setPosInfo(posInfo);
-        info.setStatInfo(statInfo);
     }
 
     public void setPosInfo(PositionInfo posInfo) {
         this.posInfo = posInfo;
         info.setPosInfo(this.posInfo);
     }
+
 
     // 자주 사용하는 상태들 보기 (hp, speed, dir, cellpos)
     public int getId() {
@@ -43,11 +42,7 @@ public class GameObject { // player, bullet, meteor
     }
 
     public int hp() {
-        return statInfo.getHp();
-    }
-
-    public float speed() {
-        return statInfo.getSpeed();
+        return info.getStatInfo().getHp();
     }
 
     public Vector2d pos() {
@@ -74,7 +69,7 @@ public class GameObject { // player, bullet, meteor
         if (gameRoom == null)
             return;
 
-        statInfo.setHp(Math.max(hp() - damage, 0));
+        info.getStatInfo().setHp(Math.max(hp() - damage, 0));
 
         SChangeHp changePacket = new SChangeHp();
         changePacket.setObjectId(getId());

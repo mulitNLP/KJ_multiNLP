@@ -142,26 +142,40 @@ export const updateInputKeyBoardUp = (key) => {
   websocket.send(JSON.stringify(message));
 };
 
+const bullletInstance = {
+  skillId: 1,
+  skillName: 'bullet',
+  skillDamage: constants.BULLET_DAMAGE,
+  skillType: 'BULLET',
+  projectile: {
+    speed: constants.BULLET_SPEED,
+    range: constants.BULLET_RADIUS,
+  }
+};
+
+const shieldInstance = {
+  skillId: 2,
+  skillName: 'shield',
+  skillDamage: 0,
+  skillType: 'SHIELD',
+};
+
 export const handleChatAttack = (content, positive, percent) => {
+  console.log(`${content}, ${positive}, ${percent}`);
   const chatPacket = {
     type: 'cchat',
     protocol: 'C_Chat',
     content: content,
   }
-
+  // chat 
   websocket.send(JSON.stringify(chatPacket));
-  let skillId = positive === true ? 1 : 2;
-  let skillName = positive === true ? 'bullet' : 'shield';
-  let skillDamage = positive === true ? constants.BULLET_DAMAGE : 0; // 임시
-  let skillType = positive === true ? 'BULLET' : 'SHIELD';
-  const skill = {
+
+  let info = positive === true ? bullletInstance : shieldInstance;
+  const skillPacket = {
     type: 'cskiill',
     protocol: 'C_Skill',
-    info: {
-      skillId: skillId,
-      name: skillName,
-      damage: skillDamage
-    }
+    info: info
   }
-
+  // skill
+  websocket.send(JSON.stringify(skillPacket));
 }

@@ -2,21 +2,26 @@
   "type" : "skilldata",
   "skills": [
     {
-      "skillId": "1",
-      "name": "defaultskill",
-      "damage": "10",
+      "skillId": "0",
+      "name": "default",
+      "damage": "0",
       "skillType": "NONE"
     },
     {
-      "skillId": "2",
-      "name": "blet",
-      "damage": "5",
+      "skillId": "1",
+      "name": "bullet",
+      "damage": "10",
       "skillType": "BULLET",
       "projectile": {
-        "name": "bullllllllettt",
-        "speed": "20.0",
-        "range": "10"
+        "speed": "800",
+        "range": "3"
       }
+    },
+    {
+      "skillId": "2",
+      "name": "shield",
+      "damage": "0",
+      "skillType": "SHIELD"
     }
   ]
 }

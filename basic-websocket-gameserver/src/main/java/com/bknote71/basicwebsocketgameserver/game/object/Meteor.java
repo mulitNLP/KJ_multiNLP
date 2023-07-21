@@ -9,8 +9,12 @@ import java.util.List;
 
 public class Meteor extends GameObject {
 
+    // meteor 전용 스텟
     // 메테오 전용 방향 단위 벡터. 따라서 moveDir 가 필요 없다.
     private Vector2d dirvec;
+    private double speed = 10;
+    private double range = 10;
+    private int damage = 1000;
 
     public Meteor() {
         setType(GameObjectType.Meteor);
@@ -26,7 +30,6 @@ public class Meteor extends GameObject {
         updateMoving(); // 무조건 움직이도록 한다.
     }
 
-    double range = 10;
     // 틱: 움직임 업데이트 기간 단위
     long nextMoveTick;
 
@@ -34,7 +37,7 @@ public class Meteor extends GameObject {
         if (nextMoveTick > System.currentTimeMillis())
             return;
 
-        int tick = (int) (1000 / speed());
+        int tick = (int) (1000 / speed);
         nextMoveTick = System.currentTimeMillis() + tick;
 
         // 무조건 dirvec 방향으로 움직임: 히트 or 이동(소멸) 둘 중 하나이다!
@@ -51,7 +54,7 @@ public class Meteor extends GameObject {
         }
 
         // 이동할 위치
-        Vector2d dest = Vector2d.dest(pos(), dirvec, speed());
+        Vector2d dest = Vector2d.dest(pos(), dirvec, speed);
 
         // 만약 맵 끝에 도달한다면 소멸해야한다.
         if (!room.cango(dest)) {
@@ -73,6 +76,6 @@ public class Meteor extends GameObject {
 
         // 데미지 판정
         for (Player player : players)
-            player.onDamaged(this, 100);
+            player.onDamaged(this, damage);
     }
 }
