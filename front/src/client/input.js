@@ -2,6 +2,7 @@
 // https://victorzhou.com/blog/build-an-io-game-part-1/#6-client-input-%EF%B8%8F
 import { updateInputKeyBoardDown, updateInputKeyBoardUp } from './networking';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { enterKeyBoard } from './index';
 import { getCurrentState } from './state';
 
@@ -11,37 +12,35 @@ const canvas = document.getElementById('game-canvas');
 const { PLAYER_RADIUS, MAP_SIZE } = Constants;
 =======
 >>>>>>> 89570e30828139c7783d459f7f210410be799700
+=======
+import { enterKeyBoard } from './index';
+>>>>>>> 9ec07c8d260f69e705b5349e2bfeeefa3859fea8
 
 function onkeyDown(e) {
-  if (e.keyCode === 87 || e.keyCode === 83 || e.keyCode === 68 || e.keyCode === 65 || e.keyCode === 13) {
+  if (e.keyCode === 87 || e.keyCode === 83 || e.keyCode === 68 || e.keyCode === 65) {
     updateInputKeyBoardDown(e.keyCode);
   }
+
+  if (e.keyCode === 13) {
+    enterKeyBoard();
+  }
+
 }
 
 function onkeyUp(e) {
-  if (e.keyCode === 87 || e.keyCode === 83 || e.keyCode === 68 || e.keyCode === 65 || e.keyCode === 13) {
+  if (e.keyCode === 87 || e.keyCode === 83 || e.keyCode === 68 || e.keyCode === 65) {
     updateInputKeyBoardUp(e.keyCode);
   }
 }
-
-// function onMouseInput(e) {
-//   handleInput(e.clientX, e.clientY);
-// }
 
 // function onTouchInput(e) {
 //   const touch = e.touches[0];
 //   handleInput(touch.clientX, touch.clientY);
 // }
 
-// function handleInput(x, y) {
-//   // const dir = Math.atan2(x - window.innerWidth / 2, window.innerHeight / 2 - y);
-//   const dir = Math.atan2(x - window.innerWidth / 2, window.innerHeight / 2 - y);
-//   updateDirection(dir);
-// }
-
 export function startCapturingInput() {
   // window.addEventListener('mousemove', onMouseInput);
-  // window.addEventListener('click', onMouseInput);
+  window.addEventListener('click', onMouseInput);
   // window.addEventListener('touchstart', onTouchInput);
   // window.addEventListener('touchmove', onTouchInput);
   window.addEventListener('keydown', onkeyDown);
@@ -50,18 +49,22 @@ export function startCapturingInput() {
 
 export function stopCapturingInput() {
   // window.removeEventListener('mousemove', onMouseInput);
-  // window.removeEventListener('click', onMouseInput);
+  window.removeEventListener('click', onMouseInput);
   // window.removeEventListener('touchstart', onTouchInput);
   // window.removeEventListener('touchmove', onTouchInput);
   window.removeEventListener('keydown', onkeyDown);
   window.removeEventListener('keyup', onkeyUp);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 9ec07c8d260f69e705b5349e2bfeeefa3859fea8
 }
 
 /* ------------------------------------------------------------ */
 
 // 여기에 상대 플레이어를 마우스 클릭 하는 기능을 구현하고 싶어
 function onMouseInput(e) {
+<<<<<<< HEAD
   const rect = canvas.getBoundingClientRect();
   const x = e.clientX - rect.left;
   const y = e.clientY - rect.top;
@@ -115,3 +118,13 @@ function clickPlayer(x, y) {
 =======
 }
 >>>>>>> 89570e30828139c7783d459f7f210410be799700
+=======
+  handleInput(e.clientX, e.clientY);
+}
+
+function handleInput(x, y) {
+  // const dir = Math.atan2(x - window.innerWidth / 2, window.innerHeight / 2 - y);
+  const dir = Math.atan2(x - window.innerWidth / 2, window.innerHeight / 2 - y);
+  updateDirection(dir);
+}
+>>>>>>> 9ec07c8d260f69e705b5349e2bfeeefa3859fea8
