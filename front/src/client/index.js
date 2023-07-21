@@ -7,6 +7,7 @@ import { downloadAssets } from './assets';
 import { initState } from './state';
 import { setLeaderboardHidden } from './leaderboard';
 import { throttle } from 'throttle-debounce';
+import { targetId } from './input';
 
 // I'm using a tiny subset of Bootstrap here for convenience - there's some wasted CSS,
 // but not much. In general, you should be careful using Bootstrap because it makes it
@@ -44,11 +45,16 @@ function onGameOver() {
 }
 
 export const enterKeyBoard = throttle (10, ()=> {
+  // 이미 포커스가 있어
   if (document.activeElement === enterInputBar){
-    // 이미 포커스가 있어
-    handleChatAttack(enterInputBar.value, true, 0);
-    enterInputBar.value="";
-    enterInputBar.blur();
+    
+    if (targetId > 0) {
+      console.log(targetId);
+      console.log("hihi");
+      handleChatAttack(targetId, enterInputBar.value, true, 0);
+      enterInputBar.value="";
+      enterInputBar.blur();
+    }
   }else{
     // 포커스가 없으니까 포커스 잡아줌
     enterInputBar.focus();
