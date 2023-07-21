@@ -42,8 +42,8 @@ class UpdateInfoTest {
         }
 
         updateInfo.setLeaderboard(l);
-        updateInfo.me = me;
-        updateInfo.others = os;
+//        updateInfo.me = me;
+//        updateInfo.others = os;
 
         ObjectMapper mapper = new ObjectMapper();
 //        mapper.enableDefaultTyping();
