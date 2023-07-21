@@ -64,7 +64,9 @@ export const connect = onGameOver => (
       } else if (message.type === 'sskill') {
         // console.log('sskill');
       } else if (message.type === 'sdie') {
-        onGameOver();
+        console.log('sdie');
+        if (message.objectId === playerId)
+          onGameOver();
       }
     };
 
@@ -144,8 +146,8 @@ export const updateInputKeyBoardUp = (key) => {
 
 const bullletInstance = {
   skillId: 1,
-  skillName: 'bullet',
-  skillDamage: constants.BULLET_DAMAGE,
+  name: 'bullet',
+  damage: constants.BULLET_DAMAGE,
   skillType: 'BULLET',
   projectile: {
     speed: constants.BULLET_SPEED,
@@ -155,13 +157,13 @@ const bullletInstance = {
 
 const shieldInstance = {
   skillId: 2,
-  skillName: 'shield',
-  skillDamage: 0,
+  name: 'shield',
+  damage: 0,
   skillType: 'SHIELD',
 };
 
 export const handleChatAttack = (targetId, content, positive, percent) => {
-  console.log(`${content}, ${positive}, ${percent}`);
+  // console.log(`${content}, ${positive}, ${percent}`);
   const chatPacket = {
     type: 'cchat',
     protocol: 'C_Chat',
@@ -172,13 +174,13 @@ export const handleChatAttack = (targetId, content, positive, percent) => {
 
   let info = positive === true ? bullletInstance : shieldInstance;
   const skillPacket = {
-    type: 'cskiill',
+    type: 'cskill',
     protocol: 'C_Skill',
     target: targetId,
     info: info
   }
   // skill
-  // websocket.send(JSON.stringify(skillPacket));
+  websocket.send(JSON.stringify(skillPacket));
 
-  console.log(JSON.stringify(skillPacket));
+  // console.log(JSON.stringify(skillPacket));
 }

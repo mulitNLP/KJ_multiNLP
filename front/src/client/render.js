@@ -38,7 +38,7 @@ let animationFrameRequestId;
 
 // 게임의 현재 상태를 그리는 함수
 function render() {
-  const { me, others, meteors } = getCurrentState();
+  const { me, others, bullets, meteors } = getCurrentState();
   if (me) {
 
     // 배경 그리기
@@ -49,7 +49,7 @@ function render() {
 
     renderTarget();
     // 모든 총알 그리기
-    // bullets.forEach(renderBullet.bind(null, me));
+    bullets.forEach(renderBullet.bind(null, me));
     meteors.forEach(renderMeteor.bind(null, me));
 
     // 모든 플레이어 그리기
@@ -62,16 +62,16 @@ function render() {
 }
 
 // // 총알을 그리는 함수
-// function renderBullet(me, bullet) {
-//   const { x, y } = bullet;
-//   context.drawImage(
-//     getAsset('bullet.svg'),
-//     canvas.width / 2 + x - me.x - BULLET_RADIUS,
-//     canvas.height / 2 + y - me.y - BULLET_RADIUS,
-//     BULLET_RADIUS * 2,
-//     BULLET_RADIUS * 2,
-//   );
-// }
+function renderBullet(me, bullet) {
+  const { x, y } = bullet;
+  context.drawImage(
+    getAsset('bullet.svg'),
+    canvas.width / 2 + x - me.x - BULLET_RADIUS,
+    canvas.height / 2 + y - me.y - BULLET_RADIUS,
+    BULLET_RADIUS * 2,
+    BULLET_RADIUS * 2,
+  );
+}
 
 // 메인 메뉴를 그리는 함수
 function renderMainMenu() {

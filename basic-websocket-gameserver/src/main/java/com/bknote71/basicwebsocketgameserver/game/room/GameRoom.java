@@ -51,7 +51,7 @@ public class GameRoom extends JobSerializer {
         this.createMeteorTask = new TimerTask() {
             @Override
             public void run() {
-                for (int i = 0; i < 10; ++i)
+                for (int i = 0; i < 1; ++i)
                     createMeteor();
             }
         };
@@ -64,7 +64,7 @@ public class GameRoom extends JobSerializer {
     public void register() {
         // tick room
         Timer updateRoomTimer = new Timer();
-        updateRoomTimer.schedule(updateRoomTask, 0, 1000 / 60); // delay, interval
+        updateRoomTimer.schedule(updateRoomTask, 0, 1000 / 50); // delay, interval
         RoomManager.Instance.registerTimerTask(updateRoomTimer);
 
         Timer createMeteorTimer = new Timer();
@@ -315,7 +315,12 @@ public class GameRoom extends JobSerializer {
                 bullet.setSkill(skill);
                 bullet.setPosInfo(bulletPosInfo);
                 bullet.setOwner(player);
-                bullet.setTarget(ObjectManager.Instance.find(skillPacket.getTarget()));
+                GameObject target = ObjectManager.Instance.find(skillPacket.getTarget());
+                if (target == null) {
+                    log.info("in handle skill, target is null so return");
+                    return;
+                }
+                bullet.setTarget(target);
                 push(this::enterGame, bullet);
             }
         }
