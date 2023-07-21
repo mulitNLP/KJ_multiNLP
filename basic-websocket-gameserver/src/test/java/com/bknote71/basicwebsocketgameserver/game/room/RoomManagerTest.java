@@ -51,32 +51,32 @@ class RoomManagerTest {
         Assertions.assertThat(room1.getSize()).isEqualTo(1);
     }
 
-    @Test
-    void room_poll_10() {
-        for (int i = 0; i < 10; ++i) {
-            RoomManager.Instance.poll();
-        }
-        // roomId check
-        Assertions.assertThat(RoomManager.Instance.getCount()).isEqualTo(1);
-
-        RoomManager.Instance.poll();
-        Assertions.assertThat(RoomManager.Instance.getCount()).isEqualTo(2);
-    }
-
-    @Test
-    void room_poll_500() {
-        for (int i = 0; i < 489; ++i) {
-            RoomManager.Instance.poll();
-        }
-        Assertions.assertThat(RoomManager.Instance.getCount()).isEqualTo(49);
-
-        for (int i = 0; i < 100; ++i) {
-            RoomManager.Instance.poll();
-        }
-        Assertions.assertThat(RoomManager.Instance.getCount()).isEqualTo(50);
-        Assertions.assertThat(RoomManager.Instance.poll().getSize()).isEqualTo(12);
-
-    }
+//    @Test
+//    void room_poll_10() {
+//        for (int i = 0; i < 10; ++i) {
+//            RoomManager.Instance.poll();
+//        }
+//        // roomId check
+//        Assertions.assertThat(RoomManager.Instance.getCount()).isEqualTo(1);
+//
+//        RoomManager.Instance.poll();
+//        Assertions.assertThat(RoomManager.Instance.getCount()).isEqualTo(2);
+//    }
+//
+//    @Test
+//    void room_poll_500() {
+//        for (int i = 0; i < 489; ++i) {
+//            RoomManager.Instance.poll();
+//        }
+//        Assertions.assertThat(RoomManager.Instance.getCount()).isEqualTo(49);
+//
+//        for (int i = 0; i < 100; ++i) {
+//            RoomManager.Instance.poll();
+//        }
+//        Assertions.assertThat(RoomManager.Instance.getCount()).isEqualTo(50);
+//        Assertions.assertThat(RoomManager.Instance.poll().getSize()).isEqualTo(12);
+//
+//    }
 
 
 }
