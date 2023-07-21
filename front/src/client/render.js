@@ -6,7 +6,7 @@ import { getCurrentState } from './state';
 
 import renderBackground from './render/background';
 import renderPlayer from './render/player';
-import renderLine from './render/Line';
+import renderLine from './render/line';
 
 const Constants = require('../shared/constants');
 
