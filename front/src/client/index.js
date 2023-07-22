@@ -47,10 +47,7 @@ function onGameOver() {
 export const enterKeyBoard = throttle (10, ()=> {
   // 이미 포커스가 있어
   if (document.activeElement === enterInputBar){
-    
     if (targetId > 0) {
-      console.log(targetId);
-      console.log("hihi");
       handleChatAttack(targetId, enterInputBar.value, true, 0);
       enterInputBar.value="";
       enterInputBar.blur();

@@ -1,7 +1,6 @@
 // Learn more about this file at:
 // https://victorzhou.com/blog/build-an-io-game-part-1/#5-client-rendering
 import { debounce } from 'throttle-debounce';
-import { getAsset } from './assets';
 import { getCurrentState } from './state';
 
 import renderBackground from './render/background';
@@ -9,14 +8,14 @@ import renderPlayer from './render/player';
 import renderLine from './render/line';
 import renderMeteor from './render/meteor';
 import renderTarget from './render/target';
+import renderBullet from './render/bullet';
 
 const Constants = require('../shared/constants');
 
-const { PLAYER_RADIUS, BULLET_RADIUS, MAP_SIZE } = Constants;
+const { MAP_SIZE } = Constants;
 
 // Get the canvas graphics context
 const canvas = document.getElementById('game-canvas');
-const context = canvas.getContext('2d');
 setCanvasDimensions();
 
 // 캔버스의 크기를 설정하는 함수
@@ -59,18 +58,6 @@ function render() {
 
   // 다음 프레임에서 이 render 함수를 다시 실행
   animationFrameRequestId = requestAnimationFrame(render);
-}
-
-// // 총알을 그리는 함수
-function renderBullet(me, bullet) {
-  const { x, y } = bullet;
-  context.drawImage(
-    getAsset('bullet.svg'),
-    canvas.width / 2 + x - me.x - BULLET_RADIUS,
-    canvas.height / 2 + y - me.y - BULLET_RADIUS,
-    BULLET_RADIUS * 2,
-    BULLET_RADIUS * 2,
-  );
 }
 
 // 메인 메뉴를 그리는 함수
