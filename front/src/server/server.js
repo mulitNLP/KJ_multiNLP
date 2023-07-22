@@ -23,10 +23,10 @@ const server = app.listen(port);
 console.log(`Server listening on port ${port}`);
 
 // Setup socket.io
-const io = socketio(server);
+// const io = socketio(server);
 
-// Listen for socket.io connections
-io.on('connection', socket => {
-  console.log('Player connected!', socket.id);
-  socket.on('disconnect', onDisconnect);
-});
+// // Listen for socket.io connections
+// io.on('connection', socket => {
+//   console.log('Player connected!', socket.id);
+//   socket.on('disconnect', onDisconnect);
+// });
