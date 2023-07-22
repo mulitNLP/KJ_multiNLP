@@ -30,4 +30,9 @@ public class HomeController {
 
         return room.getRoomId();
     }
+
+    @GetMapping("/")
+    public String home() {
+        return "index.html";
+    }
 }
