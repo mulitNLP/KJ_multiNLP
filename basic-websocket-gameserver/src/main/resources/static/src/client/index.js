@@ -51,7 +51,7 @@ export const enterKeyBoard = throttle (10, ()=> {
     if (targetId > 0) {
       if (enterInputBar.value.trim() === "") {
         // 아무것도 입력하지 않았다면 알람을 표시하고 포커스를 제거합니다.
-        console.log("입력에 실패했습니다. 메시지를 입력하세요.");
+        console.log("입력 실패, 메세지를 입력해 주세요!");
         enterInputBar.blur();
       } else {
         handleChatAttack(targetId, enterInputBar.value, true, 0);
@@ -62,7 +62,7 @@ export const enterKeyBoard = throttle (10, ()=> {
   } else {
     // 포커스가 없으니까 포커스 잡아줌
     if(targetId < 0) {
-      console.log("타겟을 지정해 주세요.");
+      console.log("타겟이 지정되지 않았음!");
       return;
     }
     enterInputBar.focus();
