@@ -97,4 +97,6 @@ function clickPlayer(x, y) {
     }
   }
 
+  targetId = -1;
+
 }
