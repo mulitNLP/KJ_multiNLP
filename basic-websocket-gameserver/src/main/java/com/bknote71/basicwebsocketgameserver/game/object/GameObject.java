@@ -7,7 +7,12 @@ import com.bknote71.basicwebsocketgameserver.protocol.SDie;
 import com.bknote71.basicwebsocketgameserver.protocol.info.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Slf4j
 @Getter @Setter
 public class GameObject { // player, bullet, meteor
 
@@ -17,6 +22,10 @@ public class GameObject { // player, bullet, meteor
     private ObjectInfo info;
     private PositionInfo posInfo;
 
+    // 여러 총알(여러 스레드)이 이 게임 오브젝트에 날라오면 동시성 문제가 생길 수 있다.
+    private Object attackLock;
+    private List<GameObject> attackers;
+
     public GameObject() {
         this.info = new ObjectInfo();
 
@@ -24,6 +33,9 @@ public class GameObject { // player, bullet, meteor
         info.setStatInfo(new StatInfo());
 
         info.setPosInfo(posInfo);
+
+        attackLock = new Object();
+        attackers = new ArrayList<>();
     }
 
     public void setPosInfo(PositionInfo posInfo) {
@@ -65,13 +77,47 @@ public class GameObject { // player, bullet, meteor
         posInfo.setState(state);
     }
 
+    public void addAttacker(GameObject attacker) {
+        if (attacker == null)
+            return;
+
+        if (!(type == GameObjectType.Player || type == GameObjectType.Meteor)) {
+            log.info("이 오브젝트의 타입은 플레이어나 메테오가 아니므로 공격할 수 없습니다.");
+            return;
+        }
+
+        synchronized (attackLock) {
+            // attacker 의 타입은 현재까지는 무조건 총알이어야 함 (일단 이것도 임시로)
+            if (attacker.getType() == GameObjectType.Bullet)
+                attackers.add(attacker);
+        }
+    }
+
+    public void flushAttackers() {
+        // attackers 제거
+        synchronized (attackLock) {
+            for (GameObject attacker : attackers) {
+                Bullet bullet = (Bullet) attacker;
+//                gameRoom.leaveGame(gameRoom::leaveGame, bullet.getId());
+                bullet.setTarget(null);
+                System.out.println("thread? " + Thread.currentThread().getName());
+            }
+            attackers.clear();
+        }
+    }
+
     public void onDamaged(GameObject attacker, int damage) {
         if (gameRoom == null)
             return;
 
-        System.out.println("before hp? " + hp());
+        if (attackers.remove(attacker))
+        {
+            log.info("어태커s중에 이 어테커는 없다? 말이 안됨");
+            return;
+        }
+
         info.getStatInfo().setHp(Math.max(hp() - damage, 0));
-        System.out.println("after hp? " + hp());
+
         SChangeHp changePacket = new SChangeHp();
         changePacket.setObjectId(getId());
         changePacket.setHp(hp());
@@ -82,7 +128,8 @@ public class GameObject { // player, bullet, meteor
     }
 
     public void onDead(GameObject attacker) {
-        System.out.println("on dead. " + getId());
+        log.info("on dead {}.",getId());
+
         if (gameRoom == null)
             return;
 
