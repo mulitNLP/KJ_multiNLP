@@ -6,18 +6,18 @@ const { PLAYER_RADIUS } = Constants;
 const canvas = document.getElementById('game-canvas');
 const context = canvas.getContext('2d');
 
-// 주어진 좌표에서 배를 그리는 함수
+// 주어진 좌표에서 운석을 그리는 함수
 function renderMeteor(old_pos, new_pos) {
     const { x, y, direction,word } = new_pos;
     const canvasX = canvas.width / 2 + x - old_pos.x;
     const canvasY = canvas.height / 2 + y - old_pos.y;
 
-    // 배 그리기
+    // 운석 그리기
     context.save();
     context.translate(canvasX, canvasY);
     context.rotate(direction);
     context.drawImage(
-        getAsset('circle.png'),
+        getAsset('meteor.png'),
         -PLAYER_RADIUS,
         -PLAYER_RADIUS,
         PLAYER_RADIUS * 2,
