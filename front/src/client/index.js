@@ -45,15 +45,26 @@ function onGameOver() {
 }
 
 export const enterKeyBoard = throttle (10, ()=> {
+  
   // 이미 포커스가 있어
   if (document.activeElement === enterInputBar){
     if (targetId > 0) {
-      handleChatAttack(targetId, enterInputBar.value, true, 0);
-      enterInputBar.value="";
-      enterInputBar.blur();
+      if (enterInputBar.value.trim() === "") {
+        // 아무것도 입력하지 않았다면 알람을 표시하고 포커스를 제거합니다.
+        console.log("입력에 실패했습니다. 메시지를 입력하세요.");
+        enterInputBar.blur();
+      } else {
+        handleChatAttack(targetId, enterInputBar.value, true, 0);
+        enterInputBar.value="";
+        enterInputBar.blur();
+      }
     }
-  }else{
+  } else {
     // 포커스가 없으니까 포커스 잡아줌
+    if(targetId < 0) {
+      console.log("타겟을 지정해 주세요.");
+      return;
+    }
     enterInputBar.focus();
-}
+  }
 });
