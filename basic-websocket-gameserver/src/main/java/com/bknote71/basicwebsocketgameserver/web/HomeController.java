@@ -16,6 +16,11 @@ import java.util.TimerTask;
 @Controller
 public class HomeController {
 
+    @GetMapping("/")
+    public String home() {
+        return "index";
+    }
+
     @GetMapping("/enter/game")
     @ResponseBody
     public Integer room_number() {
