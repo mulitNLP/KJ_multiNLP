@@ -110,13 +110,15 @@ public class GameObject { // player, bullet, meteor
         if (gameRoom == null)
             return;
 
-        if (attackers.remove(attacker))
+        if (!attackers.remove(attacker))
         {
             log.info("어태커s중에 이 어테커는 없다? 말이 안됨");
             return;
         }
 
+        log.info("before hp {}", hp());
         info.getStatInfo().setHp(Math.max(hp() - damage, 0));
+        log.info("after hp {}", hp());
 
         SChangeHp changePacket = new SChangeHp();
         changePacket.setObjectId(getId());
