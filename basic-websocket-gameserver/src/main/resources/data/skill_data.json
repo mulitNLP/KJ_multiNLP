@@ -14,7 +14,7 @@
       "skillType": "BULLET",
       "projectile": {
         "speed": "2",
-        "range": "3"
+        "range": "25"
       }
     },
     {
