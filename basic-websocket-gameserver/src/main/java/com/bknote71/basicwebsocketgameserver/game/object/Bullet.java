@@ -31,10 +31,16 @@ public class Bullet extends GameObject {
     // 참고로 자바에서는 "1틱"이 거의 1ms라고 한다.
     long nextMoveTick = 0;
     public void update() {
+        log.info("bullet update");
         GameRoom room = getGameRoom();
         int objectId = getId();
-        if (owner == null || room == null || target == null)
+        if (room == null)
             return;
+
+        if (owner == null || target == null) {
+            room.leaveGame(objectId);
+            return;
+        }
 
         // 이후에 실행해야 할 조건
         if (nextMoveTick > System.currentTimeMillis())
@@ -43,7 +49,6 @@ public class Bullet extends GameObject {
         // next move tick 갱신
         long tick = (long) (1000 / 60); // tick(대기 시간) = 1초(도달 거리)/(속도s?)
         nextMoveTick = System.currentTimeMillis() + tick;
-        // System.out.println("speed, range: " + speed + " " + range);
         // 다음 위치로 갈 수 있으면 이동한다.
         Vector2d targetPos = target.pos();
         Vector2d dir = Vector2d.unitVector(targetPos, pos());
