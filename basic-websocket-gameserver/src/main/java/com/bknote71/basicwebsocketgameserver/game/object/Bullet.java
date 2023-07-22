@@ -38,7 +38,7 @@ public class Bullet extends GameObject {
             return;
 
         if (owner == null || target == null) {
-            room.leaveGame(objectId);
+            room.push(room::leaveGame, objectId);
             return;
         }
 

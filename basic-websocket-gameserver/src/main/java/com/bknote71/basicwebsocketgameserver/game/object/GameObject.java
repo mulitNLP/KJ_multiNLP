@@ -98,9 +98,7 @@ public class GameObject { // player, bullet, meteor
         synchronized (attackLock) {
             for (GameObject attacker : attackers) {
                 Bullet bullet = (Bullet) attacker;
-//                gameRoom.leaveGame(gameRoom::leaveGame, bullet.getId());
                 bullet.setTarget(null);
-                System.out.println("thread? " + Thread.currentThread().getName());
             }
             attackers.clear();
         }
@@ -110,7 +108,7 @@ public class GameObject { // player, bullet, meteor
         if (gameRoom == null)
             return;
 
-        if (!attackers.remove(attacker))
+        if (attacker.getType() == GameObjectType.Bullet && !attackers.remove(attacker))
         {
             log.info("어태커s중에 이 어테커는 없다? 말이 안됨");
             return;
