@@ -46,7 +46,14 @@ function onGameOver() {
 
 export const enterKeyBoard = throttle (10, ()=> {
   
-  // 이미 포커스가 있어
+  // nlp는 부정이면 -1 긍정이면 1
+  // const nlp = -1;
+
+  // if (nlp === 1) {
+
+
+  // } else
+
   if (document.activeElement === enterInputBar){
     if (targetId > 0) {
       if (enterInputBar.value.trim() === "") {

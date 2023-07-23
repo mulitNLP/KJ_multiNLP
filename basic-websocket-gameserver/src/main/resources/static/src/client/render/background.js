@@ -16,8 +16,8 @@ function renderBackground(x, y) {
 
     // Draw grid
     const gridSize = 50; // Define the size of the grid here
-    context.strokeStyle = 'white';
-    context.lineWidth = 0.5;
+    context.strokeStyle = 'gray';
+    context.lineWidth = 0.2;
 
     // Calculate the boundary in canvas coordinates
     const boundaryX = canvas.width / 2 - x;
